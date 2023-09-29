@@ -9,7 +9,7 @@ class SqfLiteService {
 
   static const String dbName = "travel_planner.db";
   Database? _db;
-  List<Conversation> _conversations = [];
+  final List<Conversation> _conversations = [];
 
   Future<void> closeDb() async {
     if (_db == null) {

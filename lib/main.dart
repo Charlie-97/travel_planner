@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:travel_planner/app/presentation/home_page/home_page.dart';
 import 'package:travel_planner/app/presentation/splash/splash_screen.dart';
 import 'package:travel_planner/app/router/app_router.dart';
 import 'package:travel_planner/app/router/base_navigator.dart';
+import 'package:travel_planner/component/constants.dart';
+import 'package:travel_planner/services/local_storage/object_box/object_box_store.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  objectbox = await ObjectBox.create();
+
   runApp(const TravelPlannerApp());
 }
 
@@ -50,7 +57,7 @@ class TravelPlannerApp extends StatelessWidget {
 
       /// Follow Definitions
       onGenerateRoute: AppRouter.onGenerateRoute,
-      initialRoute: SplashScreen.routeName,
+      initialRoute: HomePage.routeName,
     );
   }
 }
