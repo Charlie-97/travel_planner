@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:travel_planner/app/presentation/home_page/home_page.dart';
+import 'package:travel_planner/app/presentation/splash/splash_screen.dart';
 import 'package:travel_planner/app/router/app_router.dart';
 import 'package:travel_planner/app/router/base_navigator.dart';
 import 'package:travel_planner/component/constants.dart';
