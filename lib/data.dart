@@ -13,11 +13,13 @@ class Data {
 
   List<Message> messageList = [
     Message(
+      id: "1",
       message: "Hello",
       createdAt: DateTime.now(),
       sendBy: "1",
     ),
     Message(
+      id:"2",
       message: "message",
       createdAt: DateTime(2023),
       sendBy: "2",

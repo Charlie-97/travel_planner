@@ -2,16 +2,17 @@ import 'package:objectbox/objectbox.dart';
 import 'package:travel_planner/data/model/conversation.dart';
 
 @Entity()
-class Message {
+class ObjMessage {
   @Id()
   int id = 0;
 
   String text;
   @Property(type: PropertyType.date)
-  DateTime? createdAt;
+  DateTime createdAt;
+  String sentBy;
 
-  final conversation = ToOne<Conversation>();
+  final conversation = ToOne<ObjConversation>();
 
-  
-  Message({required this.text, this.createdAt});
+  ObjMessage(
+      {required this.text, required this.createdAt, required this.sentBy});
 }

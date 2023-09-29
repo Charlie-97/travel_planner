@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:objectbox/objectbox.dart';
+import 'package:travel_planner/app/presentation/chat/screen/chat_screen.dart';
+import 'package:travel_planner/app/router/base_navigator.dart';
 import 'package:travel_planner/component/constants.dart';
 import 'package:travel_planner/data/model/conversation.dart';
 import 'package:travel_planner/data/model/message.dart';
@@ -13,39 +15,82 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final Box<Conversation> box = objectbox.store.box<Conversation>();
+  final Box<ObjConversation> box = objectbox.store.box<ObjConversation>();
 
   @override
   Widget build(BuildContext context) {
     final conversations = box.getAll();
     return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          "TRAVEL PLANNER",
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+        ),
+      ),
       body: conversations.isNotEmpty
-          ? ListView.builder(
+          ? ListView.separated(
               itemCount: conversations.length,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              separatorBuilder: (context, index) {
+                if (conversations[index].id != conversations.last.id) {
+                  return Divider(
+                    color: Colors.grey.shade200,
+                  );
+                } else {
+                  return const SizedBox.shrink();
+                }
+              },
               itemBuilder: (context, index) {
                 return ListTile(
+                  onTap: () {
+                    BaseNavigator.pushNamed(ChatScreen.routeName,
+                        args: conversations[index]);
+                  },
+                  leading: CircleAvatar(
+                    child: Text("${conversations[index].id}"),
+                  ),
+                  trailing: IconButton(
+                      onPressed: () {
+                        box.remove(conversations[index].id);
+                        setState(() {});
+                      },
+                      icon: const Icon(Icons.delete)),
                   title: Text(
                     conversations[index].title ?? "",
                   ),
-                  subtitle:
-                      Text("${conversations[index].messages.length} messages"),
+                  contentPadding: EdgeInsets.zero,
+                  subtitle: Text(
+                    conversations[index].messages.isNotEmpty
+                        ? conversations[index].messages.last.text
+                        : "",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 );
-              })
+              },
+            )
           : const Center(
               child: Text("Empty list"),
             ),
       floatingActionButton: FloatingActionButton(
+        shape: const CircleBorder(),
         onPressed: () {
-
           //basically how you update or add conversations with message.
           //Remove id to create new conversation, add id to update the conversatiion with that id.
-          final conversation = Conversation(id: 2, title: "Test updated");
-          conversation.messages.add(Message(text: "Get well soon"));
+          final conversation = ObjConversation(id: 3, title: "Test");
+          conversation.messages.add(ObjMessage(
+              text:
+                  "Great choice! December is a wonderful time for a vacation. To recommend a destination, I'll need a bit more information about your preferences. Are you looking for a warm beach destination, a snowy winter getaway, a cultural experience, or something else? Also, do you have a specific region or budget in mind?",
+              sentBy: 'AI',
+              createdAt: DateTime.now()));
           box.put(conversation);
 
           setState(() {});
         },
-        child: const Icon(Icons.add),
+        child: const Icon(
+          Icons.add,
+          size: 30,
+        ),
       ),
     );
   }

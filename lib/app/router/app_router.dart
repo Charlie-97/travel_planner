@@ -3,6 +3,7 @@ import 'package:travel_planner/app/presentation/authentication/sign_up/sign_up.d
 import 'package:travel_planner/app/presentation/chat/screen/chat_screen.dart';
 import 'package:travel_planner/app/presentation/home_page/home_page.dart';
 import 'package:travel_planner/app/presentation/splash/splash_screen.dart';
+import 'package:travel_planner/data/model/conversation.dart';
 
 class AppRouter {
   /// A custom screen navigation handler that handles the animation of moving from one screen to another
@@ -50,7 +51,10 @@ class AppRouter {
       case HomePage.routeName:
         return _getPageRoute(const HomePage());
       case ChatScreen.routeName:
-        return _getPageRoute(const ChatScreen());
+        final s = settings.arguments as ObjConversation;
+        return _getPageRoute(ChatScreen(
+          conversation: s,
+        ));
 
       default:
         return _getPageRoute(const SplashScreen());
