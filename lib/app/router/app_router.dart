@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:travel_planner/app/presentation/authentication/sign_up/sign_up.dart';
+import 'package:travel_planner/app/presentation/authentication/screens/sign_in.dart';
+import 'package:travel_planner/app/presentation/authentication/screens/sign_up.dart';
 import 'package:travel_planner/app/presentation/chat/screen/chat_screen.dart';
 import 'package:travel_planner/app/presentation/home_page/home_page.dart';
 import 'package:travel_planner/app/presentation/splash/splash_screen.dart';
@@ -55,6 +56,8 @@ class AppRouter {
         return _getPageRoute(ChatScreen(
           conversation: s,
         ));
+      case SignInScreen.routeName:
+        return _getPageRoute(const SignInScreen());
 
       default:
         return _getPageRoute(const SplashScreen());
