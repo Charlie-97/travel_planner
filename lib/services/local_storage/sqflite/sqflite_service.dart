@@ -7,7 +7,7 @@ class SqfLiteService {
   SqfLiteService._();
   static final SqfLiteService instance = SqfLiteService._();
 
-  final String db_name = "travel_planner.db";
+  static const String dbName = "travel_planner.db";
   Database? _db;
   List<Conversation> _conversations = [];
 
@@ -43,7 +43,7 @@ class SqfLiteService {
 
     try {
       final docsPath = await getApplicationDocumentsDirectory();
-      final dbPath = join(docsPath.path, db_name);
+      final dbPath = join(docsPath.path, dbName);
       final db = await openDatabase(
         dbPath,
         version: 1,
