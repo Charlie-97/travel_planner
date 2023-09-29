@@ -57,7 +57,7 @@ class TravelPlannerApp extends StatelessWidget {
 
       /// Follow Definitions
       onGenerateRoute: AppRouter.onGenerateRoute,
-      initialRoute: HomePage.routeName,
+      initialRoute: SplashScreen.routeName,
     );
   }
 }
