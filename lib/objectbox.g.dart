@@ -21,18 +21,18 @@ export 'package:objectbox/objectbox.dart'; // so that callers only have to impor
 
 final _entities = <ModelEntity>[
   ModelEntity(
-      id: const IdUid(1, 6715182166202861895),
-      name: 'Conversation',
-      lastPropertyId: const IdUid(2, 2935179644779578314),
+      id: const IdUid(3, 7648255137539140142),
+      name: 'ObjConversation',
+      lastPropertyId: const IdUid(2, 1297011259019299411),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
-            id: const IdUid(1, 7444668573304446545),
+            id: const IdUid(1, 6007608426916279166),
             name: 'id',
             type: 6,
             flags: 1),
         ModelProperty(
-            id: const IdUid(2, 2935179644779578314),
+            id: const IdUid(2, 1297011259019299411),
             name: 'title',
             type: 9,
             flags: 0)
@@ -40,36 +40,41 @@ final _entities = <ModelEntity>[
       relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[
         ModelBacklink(
-            name: 'messages', srcEntity: 'Message', srcField: 'conversation')
+            name: 'messages', srcEntity: 'ObjMessage', srcField: 'conversation')
       ]),
   ModelEntity(
-      id: const IdUid(2, 548786419347908769),
-      name: 'Message',
-      lastPropertyId: const IdUid(4, 1988776387876255736),
+      id: const IdUid(4, 824177915932421437),
+      name: 'ObjMessage',
+      lastPropertyId: const IdUid(5, 4762973036752310139),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
-            id: const IdUid(1, 4464755024944176890),
+            id: const IdUid(1, 4526988293094932573),
             name: 'id',
             type: 6,
             flags: 1),
         ModelProperty(
-            id: const IdUid(2, 2228122125001173981),
+            id: const IdUid(2, 2352766510614573616),
             name: 'text',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(3, 8322707654890505512),
+            id: const IdUid(3, 7027310359784485672),
             name: 'createdAt',
             type: 10,
             flags: 0),
         ModelProperty(
-            id: const IdUid(4, 1988776387876255736),
+            id: const IdUid(4, 5182205242350712346),
+            name: 'sentBy',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(5, 4762973036752310139),
             name: 'conversationId',
             type: 11,
             flags: 520,
-            indexId: const IdUid(1, 6855514899862579937),
-            relationTarget: 'Conversation')
+            indexId: const IdUid(2, 7588266359802050252),
+            relationTarget: 'ObjConversation')
       ],
       relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[])
@@ -102,32 +107,40 @@ Future<Store> openStore(
 ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
-      lastEntityId: const IdUid(2, 548786419347908769),
-      lastIndexId: const IdUid(1, 6855514899862579937),
+      lastEntityId: const IdUid(4, 824177915932421437),
+      lastIndexId: const IdUid(2, 7588266359802050252),
       lastRelationId: const IdUid(0, 0),
       lastSequenceId: const IdUid(0, 0),
-      retiredEntityUids: const [],
+      retiredEntityUids: const [6715182166202861895, 548786419347908769],
       retiredIndexUids: const [],
-      retiredPropertyUids: const [],
+      retiredPropertyUids: const [
+        7444668573304446545,
+        2935179644779578314,
+        4464755024944176890,
+        2228122125001173981,
+        8322707654890505512,
+        1988776387876255736,
+        1206206859841136853
+      ],
       retiredRelationUids: const [],
       modelVersion: 5,
       modelVersionParserMinimum: 5,
       version: 1);
 
   final bindings = <Type, EntityDefinition>{
-    Conversation: EntityDefinition<Conversation>(
+    ObjConversation: EntityDefinition<ObjConversation>(
         model: _entities[0],
-        toOneRelations: (Conversation object) => [],
-        toManyRelations: (Conversation object) => {
-              RelInfo<Message>.toOneBacklink(4, object.id,
-                      (Message srcObject) => srcObject.conversation):
+        toOneRelations: (ObjConversation object) => [],
+        toManyRelations: (ObjConversation object) => {
+              RelInfo<ObjMessage>.toOneBacklink(5, object.id,
+                      (ObjMessage srcObject) => srcObject.conversation):
                   object.messages
             },
-        getId: (Conversation object) => object.id,
-        setId: (Conversation object, int id) {
+        getId: (ObjConversation object) => object.id,
+        setId: (ObjConversation object, int id) {
           object.id = id;
         },
-        objectToFB: (Conversation object, fb.Builder fbb) {
+        objectToFB: (ObjConversation object, fb.Builder fbb) {
           final titleOffset =
               object.title == null ? null : fbb.writeString(object.title!);
           fbb.startTable(3);
@@ -139,49 +152,52 @@ ModelDefinition getObjectBoxModel() {
         objectFromFB: (Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
           final titleParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 6);
-          final object = Conversation(title: titleParam)
-            ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
-          InternalToManyAccess.setRelInfo<Conversation>(
+          final object = ObjConversation(id: idParam, title: titleParam);
+          InternalToManyAccess.setRelInfo<ObjConversation>(
               object.messages,
               store,
-              RelInfo<Message>.toOneBacklink(
-                  4, object.id, (Message srcObject) => srcObject.conversation));
+              RelInfo<ObjMessage>.toOneBacklink(5, object.id,
+                  (ObjMessage srcObject) => srcObject.conversation));
           return object;
         }),
-    Message: EntityDefinition<Message>(
+    ObjMessage: EntityDefinition<ObjMessage>(
         model: _entities[1],
-        toOneRelations: (Message object) => [object.conversation],
-        toManyRelations: (Message object) => {},
-        getId: (Message object) => object.id,
-        setId: (Message object, int id) {
+        toOneRelations: (ObjMessage object) => [object.conversation],
+        toManyRelations: (ObjMessage object) => {},
+        getId: (ObjMessage object) => object.id,
+        setId: (ObjMessage object, int id) {
           object.id = id;
         },
-        objectToFB: (Message object, fb.Builder fbb) {
+        objectToFB: (ObjMessage object, fb.Builder fbb) {
           final textOffset = fbb.writeString(object.text);
-          fbb.startTable(5);
+          final sentByOffset = fbb.writeString(object.sentBy);
+          fbb.startTable(6);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, textOffset);
-          fbb.addInt64(2, object.createdAt?.millisecondsSinceEpoch);
-          fbb.addInt64(3, object.conversation.targetId);
+          fbb.addInt64(2, object.createdAt.millisecondsSinceEpoch);
+          fbb.addOffset(3, sentByOffset);
+          fbb.addInt64(4, object.conversation.targetId);
           fbb.finish(fbb.endTable());
           return object.id;
         },
         objectFromFB: (Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
-          final createdAtValue =
-              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 8);
           final textParam = const fb.StringReader(asciiOptimization: true)
               .vTableGet(buffer, rootOffset, 6, '');
-          final createdAtParam = createdAtValue == null
-              ? null
-              : DateTime.fromMillisecondsSinceEpoch(createdAtValue);
-          final object = Message(text: textParam, createdAt: createdAtParam)
+          final createdAtParam = DateTime.fromMillisecondsSinceEpoch(
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0));
+          final sentByParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 10, '');
+          final object = ObjMessage(
+              text: textParam, createdAt: createdAtParam, sentBy: sentByParam)
             ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
           object.conversation.targetId =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0);
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0);
           object.conversation.attach(store);
           return object;
         })
@@ -190,30 +206,36 @@ ModelDefinition getObjectBoxModel() {
   return ModelDefinition(model, bindings);
 }
 
-/// [Conversation] entity fields to define ObjectBox queries.
-class Conversation_ {
-  /// see [Conversation.id]
+/// [ObjConversation] entity fields to define ObjectBox queries.
+class ObjConversation_ {
+  /// see [ObjConversation.id]
   static final id =
-      QueryIntegerProperty<Conversation>(_entities[0].properties[0]);
+      QueryIntegerProperty<ObjConversation>(_entities[0].properties[0]);
 
-  /// see [Conversation.title]
+  /// see [ObjConversation.title]
   static final title =
-      QueryStringProperty<Conversation>(_entities[0].properties[1]);
+      QueryStringProperty<ObjConversation>(_entities[0].properties[1]);
 }
 
-/// [Message] entity fields to define ObjectBox queries.
-class Message_ {
-  /// see [Message.id]
-  static final id = QueryIntegerProperty<Message>(_entities[1].properties[0]);
+/// [ObjMessage] entity fields to define ObjectBox queries.
+class ObjMessage_ {
+  /// see [ObjMessage.id]
+  static final id =
+      QueryIntegerProperty<ObjMessage>(_entities[1].properties[0]);
 
-  /// see [Message.text]
-  static final text = QueryStringProperty<Message>(_entities[1].properties[1]);
+  /// see [ObjMessage.text]
+  static final text =
+      QueryStringProperty<ObjMessage>(_entities[1].properties[1]);
 
-  /// see [Message.createdAt]
+  /// see [ObjMessage.createdAt]
   static final createdAt =
-      QueryIntegerProperty<Message>(_entities[1].properties[2]);
+      QueryIntegerProperty<ObjMessage>(_entities[1].properties[2]);
 
-  /// see [Message.conversation]
-  static final conversation =
-      QueryRelationToOne<Message, Conversation>(_entities[1].properties[3]);
+  /// see [ObjMessage.sentBy]
+  static final sentBy =
+      QueryStringProperty<ObjMessage>(_entities[1].properties[3]);
+
+  /// see [ObjMessage.conversation]
+  static final conversation = QueryRelationToOne<ObjMessage, ObjConversation>(
+      _entities[1].properties[4]);
 }
