@@ -99,7 +99,8 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
                 chatBackgroundConfig: const ChatBackgroundConfiguration(backgroundColor: Colors.transparent),
                 sendMessageConfig: SendMessageConfiguration(
-                  textFieldBackgroundColor: Colors.blue[30],
+                  textFieldBackgroundColor: Colors.blue[50],
+                  defaultSendButtonColor: Colors.blue[400],
                   textFieldConfig: const TextFieldConfiguration(
                     margin: EdgeInsets.symmetric(horizontal: 8),
                     borderRadius: BorderRadius.all(Radius.circular(12)),
