@@ -1,24 +1,26 @@
 name: travel_planner
 description: A new Flutter project.
 
-publish_to: 'none'
+publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.1.2 <4.0.0'
+  sdk: ">=3.1.2 <4.0.0"
 dependencies:
   cupertino_icons: ^1.0.2
   flutter:
     sdk: flutter
   objectbox: ^2.3.0
+  path: ^1.8.3
+  path_provider: ^2.1.1
   sqflite: ^2.3.0
 
 dev_dependencies:
   build_runner: ^2.4.6
-  objectbox_generator: ^2.3.0
   flutter_lints: ^2.0.0
   flutter_test:
     sdk: flutter
+  objectbox_generator: ^2.3.0
 
 flutter:
   uses-material-design: true
