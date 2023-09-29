@@ -87,15 +87,16 @@ class _ChatScreenState extends State<ChatScreen> {
                 appBar: AppBar(
                   title: const Text("TRAVEL PLANNER"),
                   backgroundColor: Colors.transparent,
-                  actions: [
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.add_box_outlined,
-                        size: 30,
-                      ),
-                    )
-                  ],
+                  scrolledUnderElevation: 0,
+                  // actions: [
+                  //   IconButton(
+                  //     onPressed: () {},
+                  //     icon: const Icon(
+                  //       Icons.add_box_outlined,
+                  //       size: 30,
+                  //     ),
+                  //   )
+                  // ],
                 ),
                 chatBackgroundConfig: const ChatBackgroundConfiguration(backgroundColor: Colors.transparent),
                 sendMessageConfig: SendMessageConfiguration(
