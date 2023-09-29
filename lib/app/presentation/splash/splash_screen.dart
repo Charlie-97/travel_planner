@@ -20,8 +20,8 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   initCheck() async {
-    await Future.delayed(const Duration(milliseconds: 2100));
-    BaseNavigator.pushNamed(HomePage.routeName);
+    await Future.delayed(const Duration(milliseconds: 2200));
+    BaseNavigator.pushNamedAndclear(HomePage.routeName);
   }
 
   @override
