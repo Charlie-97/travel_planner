@@ -5,7 +5,6 @@ import 'package:travel_planner/app/presentation/chat/screen/chat_screen.dart';
 import 'package:travel_planner/app/router/base_navigator.dart';
 import 'package:travel_planner/component/constants.dart';
 import 'package:travel_planner/data/model/conversation.dart';
-import 'package:travel_planner/data/model/message.dart';
 
 class HomePage extends StatefulWidget {
   static const routeName = "home_page";
@@ -63,7 +62,9 @@ class _HomePageState extends State<HomePage> {
                   ),
                   contentPadding: EdgeInsets.zero,
                   subtitle: Text(
-                    conversations[index].messages.isNotEmpty ? conversations[index].messages.last.text : "",
+                    conversations[index].messages.isNotEmpty
+                        ? conversations[index].messages.last.text
+                        : "",
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -103,16 +104,17 @@ class _HomePageState extends State<HomePage> {
           //basically how you update or add conversations with message.
           //Remove id to create new conversation, add id to update the conversatiion with that id.
           final conversation = ObjConversation(id: 0, title: "Test");
-          conversation.messages.add(
-            ObjMessage(
-              text:
-                  "Great choice! December is a wonderful time for a vacation. To recommend a destination, I'll need a bit more information about your preferences. Are you looking for a warm beach destination, a snowy winter getaway, a cultural experience, or something else? Also, do you have a specific region or budget in mind?",
-              sentBy: 'AI',
-              createdAt: DateTime.now(),
-            ),
-          );
+          // conversation.messages.add(
+          //   ObjMessage(
+          //     text:
+          //         "Hello I need to visit Paris",
+          //     sentBy: 'AI',
+          //     createdAt: DateTime.now(),
+          //   ),
+          // );
           box.put(conversation);
           setState(() {});
+          BaseNavigator.pushNamed(ChatScreen.routeName, args: conversation);
         },
         child: const Icon(
           Icons.add,
