@@ -25,10 +25,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final FocusNode _passwordFocus = FocusNode();
 
   bool validateEmail({required String email}) {
-    return ((email.contains('@') &&
-            email.contains('.') &&
-            (email.substring(email.length - 1) != '.' &&
-                email.substring(email.length - 1) != '@'))) ||
+    return ((email.contains('@') && email.contains('.') && (email.substring(email.length - 1) != '.' && email.substring(email.length - 1) != '@'))) ||
         email.isEmpty;
   }
 
@@ -79,15 +76,21 @@ class _SignInScreenState extends State<SignInScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Center(
-                  child: Text(
-                    "TRAVEL PLANNER",
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                const Text(
+                  "Hi There! 👋",
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(
-                  height: 40,
+                const Text(
+                  "Gain secure access to your account",
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
+                const SizedBox(height: 40),
                 const Text(
                   "Email",
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
@@ -107,32 +110,37 @@ class _SignInScreenState extends State<SignInScreen> {
                   onChanged: (_) {
                     setState(() {});
                   },
+                  onTapOutside: (event) {
+                    FocusScope.of(context).unfocus();
+                  },
                   decoration: InputDecoration(
                     // labelText: 'Email',
                     hintText: 'example@whatevermail.com',
-                    prefixIcon: const Icon(Icons.mail),
+                    prefixIcon: const Icon(
+                      Icons.mail,
+                      size: 20,
+                    ),
                     prefixIconColor: Theme.of(context).colorScheme.onBackground,
                     border: InputBorder.none,
                     filled: true,
                     fillColor: Colors.grey.shade100,
                     enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(6),
-                        borderSide: BorderSide.none),
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide.none,
+                    ),
                     focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(6),
-                        borderSide:
-                            BorderSide(color: Theme.of(context).primaryColor)),
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide(color: Theme.of(context).primaryColor),
+                    ),
                     errorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(6),
-                        borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.error)),
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+                    ),
                     focusedErrorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(6),
-                        borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.error)),
-                    errorText: validateEmail(email: _userEmail.text)
-                        ? null
-                        : 'Enter a valid email',
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+                    ),
+                    errorText: validateEmail(email: _userEmail.text) ? null : 'Enter a valid email',
                   ),
                 ),
                 const SizedBox(
@@ -154,36 +162,40 @@ class _SignInScreenState extends State<SignInScreen> {
                   onChanged: (_) {
                     setState(() {});
                   },
+                  onTapOutside: (event) {
+                    FocusScope.of(context).unfocus();
+                  },
                   decoration: InputDecoration(
-                    errorText: checkPasswordLength(_userPassword.text)
-                        ? null
-                        : 'Password must be at least 8 characters',
+                    errorText: checkPasswordLength(_userPassword.text) ? null : 'Password must be at least 8 characters',
                     hintText: 'min. 8 characters',
-                    prefixIcon: const Icon(Icons.lock),
+                    prefixIcon: const Icon(
+                      Icons.lock,
+                      size: 20,
+                    ),
                     prefixIconColor: Theme.of(context).colorScheme.onBackground,
                     suffixIconColor: Theme.of(context).colorScheme.onBackground,
                     filled: true,
                     fillColor: Colors.grey.shade100,
                     enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(6),
-                        borderSide: BorderSide.none),
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide.none,
+                    ),
                     focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(6),
-                        borderSide:
-                            BorderSide(color: Theme.of(context).primaryColor)),
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide(color: Theme.of(context).primaryColor),
+                    ),
                     errorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(6),
-                        borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.error)),
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+                    ),
                     focusedErrorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(6),
-                        borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.error)),
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+                    ),
                     suffixIcon: IconButton(
                       onPressed: () {
                         setState(() {
-                          final toggleVisibility = setPasswordVisibility(
-                              obscureText: obscurePassword);
+                          final toggleVisibility = setPasswordVisibility(obscureText: obscurePassword);
                           obscurePassword = !obscurePassword;
                           final newIconData = toggleVisibility();
                           passwordVisibilityIcon = Icon(newIconData);
@@ -198,7 +210,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
                 CustomButton(
                   onTap: () {
-                    BaseNavigator.pushNamedAndReplace(HomePage.routeName);
+                    BaseNavigator.pushNamedAndclear(HomePage.routeName);
                   },
                   title: 'Sign In',
                 ),
@@ -214,12 +226,11 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                     GestureDetector(
                         onTap: () {
-                          BaseNavigator.pushNamed(SignUpScreen.routeName);
+                          BaseNavigator.pushNamedAndReplace(SignUpScreen.routeName);
                         },
                         child: Text(
                           "Sign up Here",
-                          style:
-                              TextStyle(color: Theme.of(context).primaryColor),
+                          style: TextStyle(color: Theme.of(context).primaryColor),
                         )),
                   ],
                 )
