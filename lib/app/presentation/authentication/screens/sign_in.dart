@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:travel_planner/app/presentation/authentication/screens/sign_up.dart';
+import 'package:travel_planner/app/presentation/authentication/widgets/button.dart';
 import 'package:travel_planner/app/presentation/home_page/home_page.dart';
 import 'package:travel_planner/app/router/base_navigator.dart';
 
@@ -60,23 +61,40 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Login Page",
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.onPrimary,
-          ),
-        ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        centerTitle: true,
-        elevation: 0.0,
-      ),
+      // appBar: AppBar(
+      //   title: Text(
+      //     "Login Page",
+      //     style: TextStyle(
+      //       color: Theme.of(context).colorScheme.onPrimary,
+      //     ),
+      //   ),
+      //   backgroundColor: Theme.of(context).colorScheme.primary,
+      //   centerTitle: true,
+      //   elevation: 0.0,
+      // ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 100.0),
         child: Center(
           child: SingleChildScrollView(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const Center(
+                  child: Text(
+                    "TRAVEL PLANNER",
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(
+                  height: 40,
+                ),
+                const Text(
+                  "Email",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
                 TextFormField(
                   focusNode: _emailFocus,
                   onEditingComplete: () {
@@ -90,10 +108,28 @@ class _SignInScreenState extends State<SignInScreen> {
                     setState(() {});
                   },
                   decoration: InputDecoration(
-                    labelText: 'Email',
+                    // labelText: 'Email',
                     hintText: 'example@whatevermail.com',
                     prefixIcon: const Icon(Icons.mail),
                     prefixIconColor: Theme.of(context).colorScheme.onBackground,
+                    border: InputBorder.none,
+                    filled: true,
+                    fillColor: Colors.grey.shade100,
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6),
+                        borderSide: BorderSide.none),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6),
+                        borderSide:
+                            BorderSide(color: Theme.of(context).primaryColor)),
+                    errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6),
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.error)),
+                    focusedErrorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6),
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.error)),
                     errorText: validateEmail(email: _userEmail.text)
                         ? null
                         : 'Enter a valid email',
@@ -101,6 +137,13 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
                 const SizedBox(
                   height: 12.0,
+                ),
+                const Text(
+                  "Password",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                ),
+                const SizedBox(
+                  height: 8,
                 ),
                 TextFormField(
                   focusNode: _passwordFocus,
@@ -115,11 +158,27 @@ class _SignInScreenState extends State<SignInScreen> {
                     errorText: checkPasswordLength(_userPassword.text)
                         ? null
                         : 'Password must be at least 8 characters',
-                    labelText: 'Password',
                     hintText: 'min. 8 characters',
                     prefixIcon: const Icon(Icons.lock),
                     prefixIconColor: Theme.of(context).colorScheme.onBackground,
                     suffixIconColor: Theme.of(context).colorScheme.onBackground,
+                    filled: true,
+                    fillColor: Colors.grey.shade100,
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6),
+                        borderSide: BorderSide.none),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6),
+                        borderSide:
+                            BorderSide(color: Theme.of(context).primaryColor)),
+                    errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6),
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.error)),
+                    focusedErrorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6),
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.error)),
                     suffixIcon: IconButton(
                       onPressed: () {
                         setState(() {
@@ -135,13 +194,13 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                 ),
                 const SizedBox(
-                  height: 12.0,
+                  height: 40.0,
                 ),
-                ElevatedButton(
-                  onPressed: () async {
+                CustomButton(
+                  onTap: () {
                     BaseNavigator.pushNamedAndReplace(HomePage.routeName);
                   },
-                  child: const Text('Sign In'),
+                  title: 'Sign In',
                 ),
                 const SizedBox(
                   height: 12,
