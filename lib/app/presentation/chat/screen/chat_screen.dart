@@ -1,21 +1,31 @@
 import 'package:chatview/chatview.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_planner/app/presentation/chat/widgets/chat_bubble.dart';
-import 'package:travel_planner/component/constants.dart';
 import 'package:travel_planner/data/model/conversation.dart';
-import 'package:travel_planner/data/model/message.dart';
-import 'package:travel_planner/objectbox.g.dart';
+import 'package:travel_planner/models/sqflite/conversation_model.dart';
+import 'package:travel_planner/models/sqflite/message.dart';
+import 'package:travel_planner/services/local_storage/sqflite/sqflite_service.dart';
 
 class ChatScreen extends StatefulWidget {
   static const routeName = "chat";
-  const ChatScreen({super.key, required this.conversation});
-  final ObjConversation conversation;
+  const ChatScreen({
+    super.key,
+    this.conversation,
+    this.conversationModel,
+  });
+  final ObjConversation? conversation;
+  final ConversationModel? conversationModel;
+
   @override
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  final Box<ObjConversation> box = objectbox.store.box<ObjConversation>();
+  final SqfLiteService sqlDb = SqfLiteService.instance;
+  late ConversationModel conversationModel;
+  ScrollController scrollController = ScrollController();
+
+  // final Box<ObjConversation> box = objectbox.store.box<ObjConversation>();
 
   final currentUser = ChatUser(
     id: "User",
@@ -25,38 +35,81 @@ class _ChatScreenState extends State<ChatScreen> {
   ChatController? _chatController;
   late List<Message> messages;
 
+  dbCheck() async {
+    if (widget.conversationModel == null) {
+      final allConversation = await sqlDb.getAllConversation();
+
+      /// Fetch the data from Gpt server and start a new chat to get the Id
+      /// And initiate the prompt engineering message
+      ConversationModel conversation = ConversationModel(
+        id: allConversation.length + 1,
+        gptId: "testing${allConversation.length + 1}",
+        title: "New Conversation",
+        updatedAt: DateTime.now(),
+      );
+      conversationModel = conversation;
+      final dBmessages = await sqlDb.findMessages(conversationModel.gptId!);
+      if (dBmessages.isNotEmpty) {
+        messages = dBmessages
+            .map(
+              (element) => Message(
+                id: element.id.toString(),
+                message: element.message!,
+                createdAt: element.createdAt!,
+                sendBy: element.sentBy!,
+              ),
+            )
+            .toList();
+        setState(() {});
+      } else {
+        final message = Message(
+          id: "0",
+          message: "Hello Traveller! 👋 \n\nHow can I assist you today with your travel plans?",
+          createdAt: DateTime.now(),
+          sendBy: "AI",
+        );
+        addMessageTolocalDB(message);
+        messages.add(message);
+      }
+    } else {
+      final s = await sqlDb.getConversation(widget.conversationModel!.gptId!);
+      if (s != null) {
+        conversationModel = s;
+        final dBmessages = await sqlDb.findMessages(conversationModel.gptId!);
+        if (dBmessages.isNotEmpty) {
+          messages = dBmessages
+              .map(
+                (element) => Message(
+                  id: element.id.toString(),
+                  message: element.message!,
+                  createdAt: element.createdAt!,
+                  sendBy: element.sentBy!,
+                ),
+              )
+              .toList();
+          setState(() {});
+        } else {
+          final message = Message(
+            id: "0",
+            message: "Hello Traveller! 👋 \n\nHow can I assist you today with your travel plans?",
+            createdAt: DateTime.now(),
+            sendBy: "AI",
+          );
+          addMessageTolocalDB(message);
+          messages.add(message);
+        }
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    messages = widget.conversation.messages
-        .map(
-          (element) => Message(
-            id: element.id.toString(),
-            message: element.text,
-            createdAt: element.createdAt,
-            sendBy: element.sentBy,
-          ),
-        )
-        .toList();
-    if (messages.isEmpty) {
-      messages.add(
-        Message(
-          id: "1",
-            message:
-                "Hello Traveler! 👋 \n\nHow can I assist you today with your travel plans?",
-            createdAt: DateTime.now(),
-            sendBy: "AI"),
-      );
-      addMessageTolocalDB(
-        message:
-            "Hello Traveler! 👋 \n\nHow can I assist you today with your travel plans?",
-        sentBy: "AI",
-        createdAt: DateTime.now(),
-      );
-    }
+    sqlDb.initMessageStream();
+    dbCheck();
     _chatController = ChatController(
       initialMessageList: messages,
-      scrollController: ScrollController(),
+      scrollController: scrollController,
       chatUsers: [
         ChatUser(
           id: "AI",
@@ -67,18 +120,16 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  void addMessageTolocalDB(
-      {required String message,
-      required DateTime createdAt,
-      required String sentBy}) {
-    widget.conversation.messages.add(
-      ObjMessage(
-        text: message,
-        createdAt: createdAt,
-        sentBy: sentBy,
-      ),
+  void addMessageTolocalDB(Message message) {
+    final localMessage = LocalMessage(
+      id: 0,
+      conversationId: conversationModel.gptId,
+      message: message.message,
+      sentBy: message.sendBy,
+      createdAt: message.createdAt,
+      imageUrl: message.messageType == MessageType.image ? message.message : null,
     );
-    box.put(widget.conversation);
+    sqlDb.addMessage(localMessage);
   }
 
   void _onSendTap(
@@ -87,26 +138,18 @@ class _ChatScreenState extends State<ChatScreen> {
     MessageType messageType,
   ) {
     final id = int.parse(messages.last.id) + 1;
-    _chatController?.addMessage(
-      Message(
-        id: id.toString(),
-        createdAt: DateTime.now(),
-        message: message,
-        sendBy: currentUser.id,
-        replyMessage: replyMessage,
-        messageType: messageType,
-      ),
-    );
-
-    addMessageTolocalDB(
-      message: message,
+    final newMessage = Message(
+      id: id.toString(),
       createdAt: DateTime.now(),
-      sentBy: currentUser.id,
+      message: message,
+      sendBy: currentUser.id,
+      replyMessage: replyMessage,
+      messageType: messageType,
     );
-
+    addMessageTolocalDB(newMessage);
+    _chatController?.addMessage(newMessage);
     Future.delayed(const Duration(milliseconds: 300), () {
-      _chatController?.initialMessageList.last.setStatus =
-          MessageStatus.undelivered;
+      _chatController?.initialMessageList.last.setStatus = MessageStatus.undelivered;
     });
     Future.delayed(const Duration(seconds: 1), () {
       _chatController?.initialMessageList.last.setStatus = MessageStatus.read;
@@ -116,14 +159,14 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void dispose() {
     _chatController?.dispose();
+    sqlDb.closeMessageStream();
+    scrollController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: /*Theme.of(context).colorScheme.background*/
-      //     Colors.blue[50],
       body: SafeArea(
         child: _chatController != null
             ? ChatView(
@@ -141,9 +184,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   //   )
                   // ],
                 ),
-                
-                chatBackgroundConfig: const ChatBackgroundConfiguration(
-                    backgroundColor: Colors.transparent),
+                chatBackgroundConfig: const ChatBackgroundConfiguration(backgroundColor: Colors.transparent),
                 sendMessageConfig: SendMessageConfiguration(
                   textFieldBackgroundColor: Colors.blue[50],
                   defaultSendButtonColor: Colors.blue[400],
@@ -161,9 +202,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 chatController: _chatController!,
                 onSendTap: _onSendTap,
                 currentUser: currentUser,
-                chatViewState: messages.isNotEmpty
-                    ? ChatViewState.hasMessages
-                    : ChatViewState.noData,
+                chatViewState: messages.isNotEmpty ? ChatViewState.hasMessages : ChatViewState.noData,
                 chatBubbleConfig: ChatBubbleConfiguration(
                   maxWidth: MediaQuery.of(context).size.width * .7,
                   inComingChatBubbleConfig: chatBubble(
@@ -177,9 +216,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     textColor: Colors.black,
                   ),
                 ),
-                chatViewStateConfig: const ChatViewStateConfiguration(
-                    noMessageWidgetConfig:
-                        ChatViewStateWidgetConfiguration(widget: SizedBox())),
+                chatViewStateConfig: const ChatViewStateConfiguration(noMessageWidgetConfig: ChatViewStateWidgetConfiguration(widget: SizedBox())),
               )
             : const Center(
                 child: Column(

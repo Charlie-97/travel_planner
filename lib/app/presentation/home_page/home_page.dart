@@ -5,6 +5,8 @@ import 'package:travel_planner/app/presentation/chat/screen/chat_screen.dart';
 import 'package:travel_planner/app/router/base_navigator.dart';
 import 'package:travel_planner/component/constants.dart';
 import 'package:travel_planner/data/model/conversation.dart';
+import 'package:travel_planner/models/sqflite/conversation_model.dart';
+import 'package:travel_planner/services/local_storage/sqflite/sqflite_service.dart';
 
 class HomePage extends StatefulWidget {
   static const routeName = "home_page";
@@ -15,11 +17,47 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final SqfLiteService sqlDb = SqfLiteService.instance;
   final Box<ObjConversation> box = objectbox.store.box<ObjConversation>();
+
+  List<ConversationModel> conversations = [];
+
+  @override
+  void initState() {
+    super.initState();
+    sqlDb.initConversationStream();
+    sqlDb.conversationStream.stream.listen((event) async {
+      if (event.isNotEmpty) {
+        if (event.length == 1) {
+          if (!mounted) {
+            return;
+          }
+          final s = await sqlDb.getConversation(event.first.gptId!);
+          final check = conversations.where((element) => element.gptId == event.first.gptId);
+          if (check.isNotEmpty) {
+            final index = await conversations.indexWhere((element) => element.id == event.first.id);
+            conversations.removeAt(index);
+            if (s != null) {
+              conversations.insert(index, s);
+            } else {
+              conversations.insert(index, event.first);
+            }
+          } else {
+            if (s != null) {
+              conversations.insert(0, s);
+            } else {
+              conversations.insert(0, event.first);
+            }
+          }
+        }
+      }
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final conversations = box.getAll();
+    // final conversations = box.getAll();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -161,7 +199,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   trailing: IconButton(
                       onPressed: () {
-                        box.remove(conversations[index].id);
+                        // box.remove(conversations[index].id);
                         setState(() {});
                       },
                       icon: const Icon(Icons.delete)),
@@ -170,7 +208,8 @@ class _HomePageState extends State<HomePage> {
                   ),
                   contentPadding: EdgeInsets.zero,
                   subtitle: Text(
-                    conversations[index].messages.isNotEmpty ? conversations[index].messages.last.text : "",
+                    "",
+                    // conversations[index].messages.isNotEmpty ? conversations[index].messages.last.text : "",
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -209,7 +248,7 @@ class _HomePageState extends State<HomePage> {
         onPressed: () {
           //basically how you update or add conversations with message.
           //Remove id to create new conversation, add id to update the conversatiion with that id.
-          final conversation = ObjConversation(id: 0, title: "Test");
+          // final conversation = ObjConversation(id: 0, title: "Test");
           // conversation.messages.add(
           //   ObjMessage(
           //     text:
@@ -218,9 +257,9 @@ class _HomePageState extends State<HomePage> {
           //     createdAt: DateTime.now(),
           //   ),
           // );
-          box.put(conversation);
-          setState(() {});
-          BaseNavigator.pushNamed(ChatScreen.routeName, args: conversation);
+          // box.put(conversation);
+          // setState(() {});
+          BaseNavigator.pushNamed(ChatScreen.routeName);
         },
         child: const Icon(
           Icons.add,

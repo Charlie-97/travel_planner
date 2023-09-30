@@ -1,27 +1,33 @@
-class Conversation {
+import 'package:travel_planner/models/sqflite/message.dart';
+
+class ConversationModel {
   int? id;
-  String? title;
   String? gptId;
+  List<LocalMessage>? messages;
+  LocalMessage? mostRecent;
+  String? title;
   DateTime? updatedAt;
 
-  Conversation({
+  ConversationModel({
     this.id,
-    this.title,
     this.gptId,
+    this.messages,
+    this.mostRecent,
+    this.title,
     this.updatedAt,
   });
 
-  factory Conversation.fromJson(Map<String, dynamic> json) => Conversation(
+  factory ConversationModel.fromJson(Map<String, dynamic> json) => ConversationModel(
         id: json["id"],
-        title: json["title"],
         gptId: json["gpt_id"],
+        messages: [],
         updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "title": title,
         "gpt_id": gptId,
+        "title": title,
         "updated_at": updatedAt?.toIso8601String(),
       };
 }
