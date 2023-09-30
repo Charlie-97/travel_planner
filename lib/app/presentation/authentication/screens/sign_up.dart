@@ -32,10 +32,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final FocusNode _confirmPasswordFocus = FocusNode();
 
   bool validateEmail({required String email}) {
-    return ((email.contains('@') &&
-            email.contains('.') &&
-            (email.substring(email.length - 1) != '.' &&
-                email.substring(email.length - 1) != '@'))) ||
+    return ((email.contains('@') && email.contains('.') && (email.substring(email.length - 1) != '.' && email.substring(email.length - 1) != '@'))) ||
         email.isEmpty;
   }
 
@@ -109,11 +106,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       labelText: 'Email',
                       hintText: 'example@whatevermail.com',
                       prefixIcon: const Icon(Icons.mail),
-                      prefixIconColor:
-                          Theme.of(context).colorScheme.onBackground,
-                      errorText: validateEmail(email: _userEmail.text)
-                          ? null
-                          : 'Enter a valid email',
+                      prefixIconColor: Theme.of(context).colorScheme.onBackground,
+                      errorText: validateEmail(email: _userEmail.text) ? null : 'Enter a valid email',
                     ),
                   ),
                   const SizedBox(
@@ -132,21 +126,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       setState(() {});
                     },
                     decoration: InputDecoration(
-                      errorText: checkPasswordLength(_userPassword.text)
-                          ? null
-                          : 'Password must be at least 8 characters',
+                      errorText: checkPasswordLength(_userPassword.text) ? null : 'Password must be at least 8 characters',
                       labelText: 'Password',
                       hintText: 'min. 8 characters',
                       prefixIcon: const Icon(Icons.lock),
-                      prefixIconColor:
-                          Theme.of(context).colorScheme.onBackground,
-                      suffixIconColor:
-                          Theme.of(context).colorScheme.onBackground,
+                      prefixIconColor: Theme.of(context).colorScheme.onBackground,
+                      suffixIconColor: Theme.of(context).colorScheme.onBackground,
                       suffixIcon: IconButton(
                         onPressed: () {
                           setState(() {
-                            final toggleVisibility = setPasswordVisibility(
-                                obscureText: obscurePassword);
+                            final toggleVisibility = setPasswordVisibility(obscureText: obscurePassword);
                             obscurePassword = !obscurePassword;
                             final newIconData = toggleVisibility();
                             passwordVisibilityIcon = Icon(newIconData);
@@ -177,18 +166,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           : '! Password Mismatch',
                       labelText: 'Confirm Password',
                       prefixIcon: const Icon(Icons.lock),
-                      prefixIconColor:
-                          Theme.of(context).colorScheme.onBackground,
-                      suffixIconColor:
-                          Theme.of(context).colorScheme.onBackground,
+                      prefixIconColor: Theme.of(context).colorScheme.onBackground,
+                      suffixIconColor: Theme.of(context).colorScheme.onBackground,
                       suffixIcon: IconButton(
                         onPressed: () {
                           setState(() {
-                            final toggleConfirmVisibility =
-                                setPasswordVisibility(
-                                    obscureText: obscurePasswordConfirmation);
-                            obscurePasswordConfirmation =
-                                !obscurePasswordConfirmation;
+                            final toggleConfirmVisibility = setPasswordVisibility(obscureText: obscurePasswordConfirmation);
+                            obscurePasswordConfirmation = !obscurePasswordConfirmation;
                             final newIconData = toggleConfirmVisibility();
                             confirmPasswordVisibilityIcon = Icon(newIconData);
                           });
@@ -221,7 +205,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   const SizedBox(
                     height: 12,
                   ),
-                  GoogleButton(),
+                  const GoogleButton(),
                   const SizedBox(
                     height: 40.0,
                   ),
@@ -238,8 +222,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           },
                           child: Text(
                             "Login Here",
-                            style: TextStyle(
-                                color: Theme.of(context).primaryColor),
+                            style: TextStyle(color: Theme.of(context).primaryColor),
                           )),
                     ],
                   )
