@@ -32,10 +32,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final FocusNode _confirmPasswordFocus = FocusNode();
 
   bool validateEmail({required String email}) {
-    return ((email.contains('@') &&
-            email.contains('.') &&
-            (email.substring(email.length - 1) != '.' &&
-                email.substring(email.length - 1) != '@'))) ||
+    return ((email.contains('@') && email.contains('.') && (email.substring(email.length - 1) != '.' && email.substring(email.length - 1) != '@'))) ||
         email.isEmpty;
   }
 
@@ -200,8 +197,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       suffixIcon: IconButton(
                         onPressed: () {
                           setState(() {
-                            final toggleVisibility = setPasswordVisibility(
-                                obscureText: obscurePassword);
+                            final toggleVisibility = setPasswordVisibility(obscureText: obscurePassword);
                             obscurePassword = !obscurePassword;
                             final newIconData = toggleVisibility();
                             passwordVisibilityIcon = Icon(newIconData);
@@ -263,11 +259,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       suffixIcon: IconButton(
                         onPressed: () {
                           setState(() {
-                            final toggleConfirmVisibility =
-                                setPasswordVisibility(
-                                    obscureText: obscurePasswordConfirmation);
-                            obscurePasswordConfirmation =
-                                !obscurePasswordConfirmation;
+                            final toggleConfirmVisibility = setPasswordVisibility(obscureText: obscurePasswordConfirmation);
+                            obscurePasswordConfirmation = !obscurePasswordConfirmation;
                             final newIconData = toggleConfirmVisibility();
                             confirmPasswordVisibilityIcon = Icon(newIconData);
                           });
@@ -318,8 +311,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           },
                           child: Text(
                             "Login Here",
-                            style: TextStyle(
-                                color: Theme.of(context).primaryColor),
+                            style: TextStyle(color: Theme.of(context).primaryColor),
                           )),
                     ],
                   )
