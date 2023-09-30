@@ -1,7 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:travel_planner/app/presentation/home_page/home_page.dart';
+import 'package:travel_planner/app/presentation/authentication/screens/sign_in.dart';
 import 'package:travel_planner/app/router/base_navigator.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -21,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   initCheck() async {
     await Future.delayed(const Duration(milliseconds: 2200));
-    BaseNavigator.pushNamedAndclear(HomePage.routeName);
+    BaseNavigator.pushNamedAndclear(SignInScreen.routeName);
   }
 
   @override
