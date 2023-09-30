@@ -1,7 +1,10 @@
 import 'package:chatview/chatview.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_planner/app/presentation/chat/widgets/chat_bubble.dart';
+import 'package:travel_planner/component/constants.dart';
 import 'package:travel_planner/data/model/conversation.dart';
+import 'package:travel_planner/data/model/message.dart';
+import 'package:travel_planner/objectbox.g.dart';
 
 class ChatScreen extends StatefulWidget {
   static const routeName = "chat";
@@ -12,6 +15,8 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  final Box<ObjConversation> box = objectbox.store.box<ObjConversation>();
+
   final currentUser = ChatUser(
     id: "User",
     name: "User",
@@ -33,6 +38,22 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
         )
         .toList();
+    if (messages.isEmpty) {
+      messages.add(
+        Message(
+          id: "1",
+            message:
+                "Hello Traveler! 👋 \n\nHow can I assist you today with your travel plans?",
+            createdAt: DateTime.now(),
+            sendBy: "AI"),
+      );
+      addMessageTolocalDB(
+        message:
+            "Hello Traveler! 👋 \n\nHow can I assist you today with your travel plans?",
+        sentBy: "AI",
+        createdAt: DateTime.now(),
+      );
+    }
     _chatController = ChatController(
       initialMessageList: messages,
       scrollController: ScrollController(),
@@ -44,6 +65,20 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
       ],
     );
+  }
+
+  void addMessageTolocalDB(
+      {required String message,
+      required DateTime createdAt,
+      required String sentBy}) {
+    widget.conversation.messages.add(
+      ObjMessage(
+        text: message,
+        createdAt: createdAt,
+        sentBy: sentBy,
+      ),
+    );
+    box.put(widget.conversation);
   }
 
   void _onSendTap(
@@ -62,8 +97,16 @@ class _ChatScreenState extends State<ChatScreen> {
         messageType: messageType,
       ),
     );
+
+    addMessageTolocalDB(
+      message: message,
+      createdAt: DateTime.now(),
+      sentBy: currentUser.id,
+    );
+
     Future.delayed(const Duration(milliseconds: 300), () {
-      _chatController?.initialMessageList.last.setStatus = MessageStatus.undelivered;
+      _chatController?.initialMessageList.last.setStatus =
+          MessageStatus.undelivered;
     });
     Future.delayed(const Duration(seconds: 1), () {
       _chatController?.initialMessageList.last.setStatus = MessageStatus.read;
@@ -98,7 +141,9 @@ class _ChatScreenState extends State<ChatScreen> {
                   //   )
                   // ],
                 ),
-                chatBackgroundConfig: const ChatBackgroundConfiguration(backgroundColor: Colors.transparent),
+                
+                chatBackgroundConfig: const ChatBackgroundConfiguration(
+                    backgroundColor: Colors.transparent),
                 sendMessageConfig: SendMessageConfiguration(
                   textFieldBackgroundColor: Colors.blue[50],
                   defaultSendButtonColor: Colors.blue[400],
@@ -116,7 +161,9 @@ class _ChatScreenState extends State<ChatScreen> {
                 chatController: _chatController!,
                 onSendTap: _onSendTap,
                 currentUser: currentUser,
-                chatViewState: messages.isNotEmpty ? ChatViewState.hasMessages : ChatViewState.loading,
+                chatViewState: messages.isNotEmpty
+                    ? ChatViewState.hasMessages
+                    : ChatViewState.noData,
                 chatBubbleConfig: ChatBubbleConfiguration(
                   maxWidth: MediaQuery.of(context).size.width * .7,
                   inComingChatBubbleConfig: chatBubble(
@@ -130,6 +177,9 @@ class _ChatScreenState extends State<ChatScreen> {
                     textColor: Colors.black,
                   ),
                 ),
+                chatViewStateConfig: const ChatViewStateConfiguration(
+                    noMessageWidgetConfig:
+                        ChatViewStateWidgetConfiguration(widget: SizedBox())),
               )
             : const Center(
                 child: Column(
