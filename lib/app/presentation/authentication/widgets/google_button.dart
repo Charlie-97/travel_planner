@@ -4,7 +4,7 @@ import 'package:travel_planner/app/presentation/home_page/home_page.dart';
 import 'package:travel_planner/app/router/base_navigator.dart';
 
 class GoogleButton extends StatelessWidget {
-  GoogleButton({super.key});
+  const GoogleButton({super.key});
 
   @override
   Widget build(BuildContext context) {

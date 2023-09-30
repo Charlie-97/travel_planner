@@ -21,6 +21,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final conversations = box.getAll();
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
           "TRAVEL PLANNER",
@@ -62,9 +63,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   contentPadding: EdgeInsets.zero,
                   subtitle: Text(
-                    conversations[index].messages.isNotEmpty
-                        ? conversations[index].messages.last.text
-                        : "",
+                    conversations[index].messages.isNotEmpty ? conversations[index].messages.last.text : "",
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
