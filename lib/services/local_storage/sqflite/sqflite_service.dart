@@ -106,7 +106,7 @@ class SqfLiteService {
       batch.delete("conversation");
       batch.delete("chats");
       batch.commit(noResult: true);
-    } catch (e) {}
+    } catch (_) {}
   }
 
   /// Get all conversations on the DB
@@ -252,7 +252,7 @@ class SqfLiteService {
       batch.delete("conversation", where: "gpt_id = ?", whereArgs: [id]);
       batch.delete("chats", where: "conversation_id = ?", whereArgs: [id]);
       batch.commit(noResult: true);
-    } catch (e) {}
+    } catch (_) {}
   }
 
   ///Delete the message from a conversation on the DB
@@ -262,7 +262,7 @@ class SqfLiteService {
       final batch = db.batch();
       batch.delete("chats", where: "id = ?", whereArgs: [id]);
       batch.commit(noResult: true);
-    } catch (e) {}
+    } catch (_) {}
   }
 
   /// Add a conversation
@@ -372,9 +372,7 @@ class SqfLiteService {
         }
       });
       messageStream.add(message);
-    } catch (e) {
-      print(e);
-    }
+    } catch (_) {}
   }
 }
 
