@@ -203,7 +203,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   title: 'Sign In',
                 ),
                 const SizedBox(
-                  height: 12,
+                  height: 15,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

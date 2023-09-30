@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:travel_planner/app/presentation/authentication/screens/sign_in.dart';
 import 'package:travel_planner/app/presentation/authentication/widgets/button.dart';
 import 'package:travel_planner/app/presentation/authentication/widgets/google_button.dart';
+import 'package:travel_planner/app/router/base_navigator.dart';
 
 class SignUpScreen extends StatefulWidget {
   static const routeName = "sign_up";
@@ -295,7 +295,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   const GoogleButton(),
                   const SizedBox(
-                    height: 10.0,
+                    height: 15.0,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -306,8 +306,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       GestureDetector(
                           onTap: () {
-                            Navigator.pushReplacementNamed(
-                                context, SignInScreen.routeName);
+                            BaseNavigator.pop();
                           },
                           child: Text(
                             "Login Here",
