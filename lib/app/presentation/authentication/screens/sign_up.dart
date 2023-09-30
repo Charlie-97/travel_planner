@@ -357,29 +357,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     },
                     title: "Sign up",
                   ),
-                  const SizedBox(height: 12),
-                  const Row(
-                    children: [
-                      Expanded(
-                        child: Divider(thickness: 0.5),
-                      ),
-                      SizedBox(width: 12),
-                      Center(
-                        child: Text(
-                          'OR',
-                          style: TextStyle(fontSize: 10.0),
-                        ),
-                      ),
-                      SizedBox(width: 12),
-                      Expanded(
-                        child: Divider(thickness: 0.5),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  const GoogleButton(),
+                  // const SizedBox(height: 12),
+                  // const Row(
+                  //   children: [
+                  //     Expanded(
+                  //       child: Divider(thickness: 0.5),
+                  //     ),
+                  //     SizedBox(width: 12),
+                  //     Center(
+                  //       child: Text(
+                  //         'OR',
+                  //         style: TextStyle(fontSize: 10.0),
+                  //       ),
+                  //     ),
+                  //     SizedBox(width: 12),
+                  //     Expanded(
+                  //       child: Divider(thickness: 0.5),
+                  //     ),
+                  //   ],
+                  // ),
+                  // const SizedBox(
+                  //   height: 12,
+                  // ),
+                  // const GoogleButton(),
                   const SizedBox(
                     height: 15.0,
                   ),
