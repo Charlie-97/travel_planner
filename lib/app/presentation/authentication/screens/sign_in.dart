@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:travel_planner/app/presentation/authentication/screens/sign_up.dart';
 import 'package:travel_planner/app/presentation/authentication/widgets/button.dart';
-import 'package:travel_planner/app/presentation/home_page/home_page.dart';
+import 'package:travel_planner/app/presentation/navigation.dart';
 import 'package:travel_planner/app/router/base_navigator.dart';
 import 'package:travel_planner/component/overlays/loader.dart';
 
@@ -26,7 +26,10 @@ class _SignInScreenState extends State<SignInScreen> {
   final FocusNode _passwordFocus = FocusNode();
 
   bool validateEmail({required String email}) {
-    return ((email.contains('@') && email.contains('.') && (email.substring(email.length - 1) != '.' && email.substring(email.length - 1) != '@'))) ||
+    return ((email.contains('@') &&
+            email.contains('.') &&
+            (email.substring(email.length - 1) != '.' &&
+                email.substring(email.length - 1) != '@'))) ||
         email.isEmpty;
   }
 

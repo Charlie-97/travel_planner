@@ -37,7 +37,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final FocusNode _usernameFocus = FocusNode();
 
   bool validateEmail({required String email}) {
-    return ((email.contains('@') && email.contains('.') && (email.substring(email.length - 1) != '.' && email.substring(email.length - 1) != '@'))) ||
+    return ((email.contains('@') &&
+            email.contains('.') &&
+            (email.substring(email.length - 1) != '.' &&
+                email.substring(email.length - 1) != '@'))) ||
         email.isEmpty;
   }
 
