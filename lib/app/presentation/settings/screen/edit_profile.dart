@@ -186,132 +186,132 @@ class _EditProfileState extends State<EditProfile> {
                   const SizedBox(
                     height: 12.0,
                   ),
-                  TextFormField(
-                    obscureText: obscurePassword,
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    controller: _newPassword,
-                    onChanged: (_) {
-                      setState(() {});
-                    },
-                    onTapOutside: (event) {
-                      FocusScope.of(context).unfocus();
-                    },
-                    decoration: InputDecoration(
-                      errorText: checkPasswordLength(_newPassword.text)
-                          ? null
-                          : 'Password must be at least 8 characters',
-                      hintText: 'min. 8 characters',
-                      prefixIcon: const Icon(
-                        Icons.lock,
-                        size: 20,
-                      ),
-                      prefixIconColor:
-                          Theme.of(context).colorScheme.onBackground,
-                      suffixIconColor:
-                          Theme.of(context).colorScheme.onBackground,
-                      filled: true,
-                      fillColor: Colors.grey.shade100,
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide.none,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide:
-                            BorderSide(color: Theme.of(context).primaryColor),
-                      ),
-                      errorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.error),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.error),
-                      ),
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            final toggleVisibility = setPasswordVisibility(
-                                obscureText: obscurePassword);
-                            obscurePassword = !obscurePassword;
-                            final newIconData = toggleVisibility();
-                            passwordVisibilityIcon = Icon(newIconData);
-                          });
-                        },
-                        icon: passwordVisibilityIcon,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 12.0,
-                  ),
-                  TextFormField(
-                    obscureText: obscurePasswordConfirmation,
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    controller: _confirmNewPassword,
-                    onChanged: (_) {
-                      setState(() {});
-                    },
-                    onTapOutside: (event) {
-                      FocusScope.of(context).unfocus();
-                    },
-                    decoration: InputDecoration(
-                      errorText: checkPasswordsMatch(
-                        password: _newPassword.text,
-                        passwordConfirmation: _confirmNewPassword.text,
-                      )
-                          ? null
-                          : '! Password Mismatch',
-                      hintText: 'Confirm password',
-                      prefixIcon: const Icon(
-                        Icons.lock,
-                        size: 20,
-                      ),
-                      prefixIconColor:
-                          Theme.of(context).colorScheme.onBackground,
-                      suffixIconColor:
-                          Theme.of(context).colorScheme.onBackground,
-                      filled: true,
-                      fillColor: Colors.grey.shade100,
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide.none,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide:
-                            BorderSide(color: Theme.of(context).primaryColor),
-                      ),
-                      errorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.error),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.error),
-                      ),
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            final toggleConfirmVisibility =
-                                setPasswordVisibility(
-                                    obscureText: obscurePasswordConfirmation);
-                            obscurePasswordConfirmation =
-                                !obscurePasswordConfirmation;
-                            final newIconData = toggleConfirmVisibility();
-                            confirmPasswordVisibilityIcon = Icon(newIconData);
-                          });
-                        },
-                        icon: confirmPasswordVisibilityIcon,
-                      ),
-                    ),
-                  ),
+                  // TextFormField(
+                  //   obscureText: obscurePassword,
+                  //   enableSuggestions: false,
+                  //   autocorrect: false,
+                  //   controller: _newPassword,
+                  //   onChanged: (_) {
+                  //     setState(() {});
+                  //   },
+                  //   onTapOutside: (event) {
+                  //     FocusScope.of(context).unfocus();
+                  //   },
+                  //   decoration: InputDecoration(
+                  //     errorText: checkPasswordLength(_newPassword.text)
+                  //         ? null
+                  //         : 'Password must be at least 8 characters',
+                  //     hintText: 'min. 8 characters',
+                  //     prefixIcon: const Icon(
+                  //       Icons.lock,
+                  //       size: 20,
+                  //     ),
+                  //     prefixIconColor:
+                  //         Theme.of(context).colorScheme.onBackground,
+                  //     suffixIconColor:
+                  //         Theme.of(context).colorScheme.onBackground,
+                  //     filled: true,
+                  //     fillColor: Colors.grey.shade100,
+                  //     enabledBorder: OutlineInputBorder(
+                  //       borderRadius: BorderRadius.circular(16),
+                  //       borderSide: BorderSide.none,
+                  //     ),
+                  //     focusedBorder: OutlineInputBorder(
+                  //       borderRadius: BorderRadius.circular(16),
+                  //       borderSide:
+                  //           BorderSide(color: Theme.of(context).primaryColor),
+                  //     ),
+                  //     errorBorder: OutlineInputBorder(
+                  //       borderRadius: BorderRadius.circular(16),
+                  //       borderSide: BorderSide(
+                  //           color: Theme.of(context).colorScheme.error),
+                  //     ),
+                  //     focusedErrorBorder: OutlineInputBorder(
+                  //       borderRadius: BorderRadius.circular(16),
+                  //       borderSide: BorderSide(
+                  //           color: Theme.of(context).colorScheme.error),
+                  //     ),
+                  //     suffixIcon: IconButton(
+                  //       onPressed: () {
+                  //         setState(() {
+                  //           final toggleVisibility = setPasswordVisibility(
+                  //               obscureText: obscurePassword);
+                  //           obscurePassword = !obscurePassword;
+                  //           final newIconData = toggleVisibility();
+                  //           passwordVisibilityIcon = Icon(newIconData);
+                  //         });
+                  //       },
+                  //       icon: passwordVisibilityIcon,
+                  //     ),
+                  //   ),
+                  // ),
+                  // const SizedBox(
+                  //   height: 12.0,
+                  // ),
+                  // TextFormField(
+                  //   obscureText: obscurePasswordConfirmation,
+                  //   enableSuggestions: false,
+                  //   autocorrect: false,
+                  //   controller: _confirmNewPassword,
+                  //   onChanged: (_) {
+                  //     setState(() {});
+                  //   },
+                  //   onTapOutside: (event) {
+                  //     FocusScope.of(context).unfocus();
+                  //   },
+                  //   decoration: InputDecoration(
+                  //     errorText: checkPasswordsMatch(
+                  //       password: _newPassword.text,
+                  //       passwordConfirmation: _confirmNewPassword.text,
+                  //     )
+                  //         ? null
+                  //         : '! Password Mismatch',
+                  //     hintText: 'Confirm password',
+                  //     prefixIcon: const Icon(
+                  //       Icons.lock,
+                  //       size: 20,
+                  //     ),
+                  //     prefixIconColor:
+                  //         Theme.of(context).colorScheme.onBackground,
+                  //     suffixIconColor:
+                  //         Theme.of(context).colorScheme.onBackground,
+                  //     filled: true,
+                  //     fillColor: Colors.grey.shade100,
+                  //     enabledBorder: OutlineInputBorder(
+                  //       borderRadius: BorderRadius.circular(16),
+                  //       borderSide: BorderSide.none,
+                  //     ),
+                  //     focusedBorder: OutlineInputBorder(
+                  //       borderRadius: BorderRadius.circular(16),
+                  //       borderSide:
+                  //           BorderSide(color: Theme.of(context).primaryColor),
+                  //     ),
+                  //     errorBorder: OutlineInputBorder(
+                  //       borderRadius: BorderRadius.circular(16),
+                  //       borderSide: BorderSide(
+                  //           color: Theme.of(context).colorScheme.error),
+                  //     ),
+                  //     focusedErrorBorder: OutlineInputBorder(
+                  //       borderRadius: BorderRadius.circular(16),
+                  //       borderSide: BorderSide(
+                  //           color: Theme.of(context).colorScheme.error),
+                  //     ),
+                  //     suffixIcon: IconButton(
+                  //       onPressed: () {
+                  //         setState(() {
+                  //           final toggleConfirmVisibility =
+                  //               setPasswordVisibility(
+                  //                   obscureText: obscurePasswordConfirmation);
+                  //           obscurePasswordConfirmation =
+                  //               !obscurePasswordConfirmation;
+                  //           final newIconData = toggleConfirmVisibility();
+                  //           confirmPasswordVisibilityIcon = Icon(newIconData);
+                  //         });
+                  //       },
+                  //       icon: confirmPasswordVisibilityIcon,
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -319,7 +319,7 @@ class _EditProfileState extends State<EditProfile> {
               alignment: Alignment.bottomCenter,
               child: CustomButton(
                 onTap: () {
-                  BaseNavigator.pushNamedAndclear(HomePage.routeName);
+                  BaseNavigator.pop();
                 },
                 title: "Save Changes",
               ),

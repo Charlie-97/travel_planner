@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:travel_planner/app/presentation/authentication/screens/sign_in.dart';
 import 'package:travel_planner/app/presentation/authentication/widgets/button.dart';
-import 'package:travel_planner/app/presentation/authentication/widgets/google_button.dart';
-import 'package:travel_planner/app/presentation/home_page/home_page.dart';
+import 'package:travel_planner/app/presentation/navigation.dart';
 import 'package:travel_planner/app/router/base_navigator.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -37,7 +36,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final FocusNode _usernameFocus = FocusNode();
 
   bool validateEmail({required String email}) {
-    return ((email.contains('@') && email.contains('.') && (email.substring(email.length - 1) != '.' && email.substring(email.length - 1) != '@'))) ||
+    return ((email.contains('@') &&
+            email.contains('.') &&
+            (email.substring(email.length - 1) != '.' &&
+                email.substring(email.length - 1) != '@'))) ||
         email.isEmpty;
   }
 
@@ -147,7 +149,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         Icons.person,
                         size: 20,
                       ),
-                      prefixIconColor: Theme.of(context).colorScheme.onBackground,
+                      prefixIconColor:
+                          Theme.of(context).colorScheme.onBackground,
                       border: InputBorder.none,
                       filled: true,
                       fillColor: Colors.grey.shade100,
@@ -157,15 +160,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(color: Theme.of(context).primaryColor),
+                        borderSide:
+                            BorderSide(color: Theme.of(context).primaryColor),
                       ),
                       errorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.error),
                       ),
                       focusedErrorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.error),
                       ),
                       // errorText: validateEmail(email: _userEmail.text) ? null : 'Enter your full name',
                     ),
@@ -200,7 +206,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         Icons.mail,
                         size: 20,
                       ),
-                      prefixIconColor: Theme.of(context).colorScheme.onBackground,
+                      prefixIconColor:
+                          Theme.of(context).colorScheme.onBackground,
                       border: InputBorder.none,
                       filled: true,
                       fillColor: Colors.grey.shade100,
@@ -210,17 +217,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(color: Theme.of(context).primaryColor),
+                        borderSide:
+                            BorderSide(color: Theme.of(context).primaryColor),
                       ),
                       errorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.error),
                       ),
                       focusedErrorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.error),
                       ),
-                      errorText: validateEmail(email: _userEmail.text) ? null : 'Enter a valid email',
+                      errorText: validateEmail(email: _userEmail.text)
+                          ? null
+                          : 'Enter a valid email',
                     ),
                   ),
                   const SizedBox(height: 12.0),
@@ -244,14 +256,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       FocusScope.of(context).unfocus();
                     },
                     decoration: InputDecoration(
-                      errorText: checkPasswordLength(_userPassword.text) ? null : 'Password must be at least 8 characters',
+                      errorText: checkPasswordLength(_userPassword.text)
+                          ? null
+                          : 'Password must be at least 8 characters',
                       hintText: 'min. 8 characters',
                       prefixIcon: const Icon(
                         Icons.lock,
                         size: 20,
                       ),
-                      prefixIconColor: Theme.of(context).colorScheme.onBackground,
-                      suffixIconColor: Theme.of(context).colorScheme.onBackground,
+                      prefixIconColor:
+                          Theme.of(context).colorScheme.onBackground,
+                      suffixIconColor:
+                          Theme.of(context).colorScheme.onBackground,
                       filled: true,
                       fillColor: Colors.grey.shade100,
                       enabledBorder: OutlineInputBorder(
@@ -260,20 +276,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(color: Theme.of(context).primaryColor),
+                        borderSide:
+                            BorderSide(color: Theme.of(context).primaryColor),
                       ),
                       errorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.error),
                       ),
                       focusedErrorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.error),
                       ),
                       suffixIcon: IconButton(
                         onPressed: () {
                           setState(() {
-                            final toggleVisibility = setPasswordVisibility(obscureText: obscurePassword);
+                            final toggleVisibility = setPasswordVisibility(
+                                obscureText: obscurePassword);
                             obscurePassword = !obscurePassword;
                             final newIconData = toggleVisibility();
                             passwordVisibilityIcon = Icon(newIconData);
@@ -317,8 +337,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         Icons.lock,
                         size: 20,
                       ),
-                      prefixIconColor: Theme.of(context).colorScheme.onBackground,
-                      suffixIconColor: Theme.of(context).colorScheme.onBackground,
+                      prefixIconColor:
+                          Theme.of(context).colorScheme.onBackground,
+                      suffixIconColor:
+                          Theme.of(context).colorScheme.onBackground,
                       filled: true,
                       fillColor: Colors.grey.shade100,
                       enabledBorder: OutlineInputBorder(
@@ -327,21 +349,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(color: Theme.of(context).primaryColor),
+                        borderSide:
+                            BorderSide(color: Theme.of(context).primaryColor),
                       ),
                       errorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.error),
                       ),
                       focusedErrorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.error),
                       ),
                       suffixIcon: IconButton(
                         onPressed: () {
                           setState(() {
-                            final toggleConfirmVisibility = setPasswordVisibility(obscureText: obscurePasswordConfirmation);
-                            obscurePasswordConfirmation = !obscurePasswordConfirmation;
+                            final toggleConfirmVisibility =
+                                setPasswordVisibility(
+                                    obscureText: obscurePasswordConfirmation);
+                            obscurePasswordConfirmation =
+                                !obscurePasswordConfirmation;
                             final newIconData = toggleConfirmVisibility();
                             confirmPasswordVisibilityIcon = Icon(newIconData);
                           });
@@ -353,7 +381,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   const SizedBox(height: 40),
                   CustomButton(
                     onTap: () {
-                      BaseNavigator.pushNamedAndclear(HomePage.routeName);
+                      BaseNavigator.pushNamedAndclear(Navigation.routeName);
                     },
                     title: "Sign up",
                   ),
@@ -392,11 +420,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          BaseNavigator.pushNamedAndReplace(SignInScreen.routeName);
+                          BaseNavigator.pushNamedAndReplace(
+                              SignInScreen.routeName);
                         },
                         child: Text(
                           "Login Here",
-                          style: TextStyle(color: Theme.of(context).primaryColor),
+                          style:
+                              TextStyle(color: Theme.of(context).primaryColor),
                         ),
                       ),
                     ],
