@@ -120,7 +120,6 @@ class SqfLiteService {
           orderBy: 'updated_at DESC',
         );
         if (dbConversation.isEmpty) return [];
-
         final s = await Future.wait(dbConversation.map((e) async {
           final mostRecentMessage = await txn.query(
             "chats",

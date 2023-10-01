@@ -39,6 +39,9 @@ class _HomePageState extends State<HomePage> {
       conversations.clear();
       conversations = allConversation;
       conversations.sort((a, b) => b.updatedAt!.compareTo(a.updatedAt!));
+    } else {
+      conversations.clear();
+      conversations = allConversation;
     }
     setState(() {});
   }
