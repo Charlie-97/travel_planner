@@ -127,10 +127,8 @@ class _HomePageState extends State<HomePage> {
                     onPressed: () async {
                       final bool? result = await AppOverlays.showDeleteConversationDialog(context);
                       if (!mounted) return;
-                      print(result);
                       if (result != null) {
                         if (result) {
-                          print("here");
                           await sqlDb.deleteConversation(conversations[index].gptId!);
                           refreshConversations();
                         }
