@@ -227,7 +227,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         CustomButton(
                           onTap: () async {
                             isLoading.value = true;
-                            await Future.delayed(const Duration(milliseconds: 5000));
+                            await Future.delayed(const Duration(milliseconds: 200));
                             isLoading.value = false;
                             BaseNavigator.pushNamedAndclear(HomePage.routeName);
                           },

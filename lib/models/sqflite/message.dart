@@ -1,5 +1,5 @@
 class LocalMessage {
-  int? id;
+  String? id;
   String? conversationId;
   String? message;
   String? sentBy;

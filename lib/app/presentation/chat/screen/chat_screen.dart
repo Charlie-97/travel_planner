@@ -5,6 +5,7 @@ import 'package:travel_planner/data/model/conversation.dart';
 import 'package:travel_planner/models/sqflite/conversation_model.dart';
 import 'package:travel_planner/models/sqflite/message.dart';
 import 'package:travel_planner/services/local_storage/sqflite/sqflite_service.dart';
+import 'package:uuid/uuid.dart';
 
 class ChatScreen extends StatefulWidget {
   static const routeName = "chat";
@@ -24,29 +25,28 @@ class _ChatScreenState extends State<ChatScreen> {
   final SqfLiteService sqlDb = SqfLiteService.instance;
   late ConversationModel conversationModel;
   ScrollController scrollController = ScrollController();
-
-  // final Box<ObjConversation> box = objectbox.store.box<ObjConversation>();
+  final uid = const Uuid();
 
   final currentUser = ChatUser(
-    id: "User",
+    id: "user",
     name: "User",
-    // profilePhoto: Data.profileImage,
   );
   ChatController? _chatController;
-  late List<Message> messages;
+  List<Message> messages = [];
 
   dbCheck() async {
     if (widget.conversationModel == null) {
-      final allConversation = await sqlDb.getAllConversation();
+      final id = uid.v1();
 
       /// Fetch the data from Gpt server and start a new chat to get the Id
       /// And initiate the prompt engineering message
       ConversationModel conversation = ConversationModel(
-        id: allConversation.length + 1,
-        gptId: "testing${allConversation.length + 1}",
+        id: id,
+        gptId: "testing-$id",
         title: "New Conversation",
         updatedAt: DateTime.now(),
       );
+      sqlDb.addConversation(conversation);
       conversationModel = conversation;
       final dBmessages = await sqlDb.findMessages(conversationModel.gptId!);
       if (dBmessages.isNotEmpty) {
@@ -62,14 +62,16 @@ class _ChatScreenState extends State<ChatScreen> {
             .toList();
         setState(() {});
       } else {
+        final id = uid.v1();
         final message = Message(
-          id: "0",
+          id: id,
           message: "Hello Traveller! 👋 \n\nHow can I assist you today with your travel plans?",
           createdAt: DateTime.now(),
           sendBy: "AI",
         );
         addMessageTolocalDB(message);
         messages.add(message);
+        setState(() {});
       }
     } else {
       final s = await sqlDb.getConversation(widget.conversationModel!.gptId!);
@@ -77,20 +79,19 @@ class _ChatScreenState extends State<ChatScreen> {
         conversationModel = s;
         final dBmessages = await sqlDb.findMessages(conversationModel.gptId!);
         if (dBmessages.isNotEmpty) {
-          messages = dBmessages
-              .map(
-                (element) => Message(
-                  id: element.id.toString(),
-                  message: element.message!,
-                  createdAt: element.createdAt!,
-                  sendBy: element.sentBy!,
-                ),
-              )
-              .toList();
+          messages = dBmessages.map((element) {
+            return Message(
+              id: element.id.toString(),
+              message: element.message!,
+              createdAt: element.createdAt!,
+              sendBy: element.sentBy!,
+            );
+          }).toList();
           setState(() {});
         } else {
+          final id = uid.v1();
           final message = Message(
-            id: "0",
+            id: id,
             message: "Hello Traveller! 👋 \n\nHow can I assist you today with your travel plans?",
             createdAt: DateTime.now(),
             sendBy: "AI",
@@ -106,23 +107,25 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     sqlDb.initMessageStream();
-    dbCheck();
-    _chatController = ChatController(
-      initialMessageList: messages,
-      scrollController: scrollController,
-      chatUsers: [
-        ChatUser(
-          id: "AI",
-          name: "TPA",
-          // profilePhoto: Data.profileImage,
-        ),
-      ],
-    );
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await dbCheck();
+      _chatController = ChatController(
+        initialMessageList: messages,
+        scrollController: scrollController,
+        chatUsers: [
+          ChatUser(
+            id: "AI",
+            name: "Travel Bot",
+            // profilePhoto: Data.profileImage,
+          ),
+        ],
+      );
+    });
   }
 
-  void addMessageTolocalDB(Message message) {
+  void addMessageTolocalDB(Message message) async {
     final localMessage = LocalMessage(
-      id: 0,
+      id: message.id,
       conversationId: conversationModel.gptId,
       message: message.message,
       sentBy: message.sendBy,
@@ -136,10 +139,10 @@ class _ChatScreenState extends State<ChatScreen> {
     String message,
     ReplyMessage replyMessage,
     MessageType messageType,
-  ) {
-    final id = int.parse(messages.last.id) + 1;
+  ) async {
+    final id = uid.v1();
     final newMessage = Message(
-      id: id.toString(),
+      id: id,
       createdAt: DateTime.now(),
       message: message,
       sendBy: currentUser.id,
@@ -160,7 +163,6 @@ class _ChatScreenState extends State<ChatScreen> {
   void dispose() {
     _chatController?.dispose();
     sqlDb.closeMessageStream();
-    scrollController.dispose();
     super.dispose();
   }
 
@@ -171,7 +173,7 @@ class _ChatScreenState extends State<ChatScreen> {
         child: _chatController != null
             ? ChatView(
                 appBar: AppBar(
-                  title: const Text("TRAVEL PLANNER"),
+                  title: Text(conversationModel.title ?? "TRAVEL PLANNER"),
                   backgroundColor: Colors.transparent,
                   scrolledUnderElevation: 0,
                   // actions: [
@@ -184,7 +186,9 @@ class _ChatScreenState extends State<ChatScreen> {
                   //   )
                   // ],
                 ),
-                chatBackgroundConfig: const ChatBackgroundConfiguration(backgroundColor: Colors.transparent),
+                chatBackgroundConfig: const ChatBackgroundConfiguration(
+                  backgroundColor: Colors.transparent,
+                ),
                 sendMessageConfig: SendMessageConfiguration(
                   textFieldBackgroundColor: Colors.blue[50],
                   defaultSendButtonColor: Colors.blue[400],

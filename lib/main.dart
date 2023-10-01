@@ -25,6 +25,12 @@ class TravelPlannerApp extends StatefulWidget {
 
 class _TravelPlannerAppState extends State<TravelPlannerApp> {
   @override
+  void initState() {
+    super.initState();
+    SqfLiteService.instance.openDb();
+  }
+
+  @override
   void dispose() {
     SqfLiteService.instance.closeDb();
     super.dispose();

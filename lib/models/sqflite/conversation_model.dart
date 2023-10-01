@@ -1,7 +1,7 @@
 import 'package:travel_planner/models/sqflite/message.dart';
 
 class ConversationModel {
-  int? id;
+  String? id;
   String? gptId;
   List<LocalMessage>? messages;
   LocalMessage? mostRecent;
@@ -20,6 +20,7 @@ class ConversationModel {
   factory ConversationModel.fromJson(Map<String, dynamic> json) => ConversationModel(
         id: json["id"],
         gptId: json["gpt_id"],
+        title: json["title"],
         messages: [],
         updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
       );

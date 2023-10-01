@@ -46,22 +46,22 @@ class SqfLiteService {
     }
     const createConversationTable = """
       CREATE TABLE IF NOT EXISTS conversation (
-        id	INTEGER NOT NULL,
+        id	TEXT NOT NULL,
         gpt_id	TEXT NOT NULL,
         title	TEXT NOT NULL,
         updated_at TEXT,
-        PRIMARY KEY("id" AUTOINCREMENT)
+        PRIMARY KEY("id")
       );""";
 
     const createChatsTable = """
       CREATE TABLE IF NOT EXISTS chats (
-        id	INTEGER NOT NULL,
+        id	TEXT NOT NULL,
         conversation_id	TEXT NOT NULL,
         message	TEXT NOT NULL,
         sent_by	TEXT NOT NULL,
         created_at	TEXT NOT NULL,
         image_url TEXT,
-        PRIMARY KEY("id","conversation_id"),
+        PRIMARY KEY("id"),
         FOREIGN KEY("conversation_id") REFERENCES "conversation"("gpt_id")
       );""";
 
@@ -138,11 +138,60 @@ class SqfLiteService {
 
           return conversation;
         }).toList());
-
+        conversationStream.sink.add(s);
         return s;
       });
     } catch (e) {
       return [];
+    }
+  }
+
+  /// Get a particular conversation on the DB by the ID
+  getConversationExit(String chatId) async {
+    try {
+      final db = getDatabase();
+
+      return await db.transaction((txn) async {
+        final conv = await txn.query(
+          "conversation",
+          where: "gpt_id = ?",
+          whereArgs: [chatId],
+        );
+
+        if (conv.isEmpty) return null;
+
+        final mostRecentMessage = await txn.query(
+          'chats',
+          where: "conversation_id = ?",
+          whereArgs: [chatId],
+          orderBy: "created_at DESC",
+          limit: 1,
+        );
+
+        final allMessage = await txn.query(
+          'chats',
+          where: "conversation_id = ?",
+          whereArgs: [chatId],
+          orderBy: "created_at DESC",
+        );
+
+        final conversation = ConversationModel.fromJson(conv.first);
+        if (mostRecentMessage.isNotEmpty) {
+          final localMessage = LocalMessage.fromJson(mostRecentMessage.first);
+          conversation.mostRecent = localMessage;
+        }
+
+        if (allMessage.isNotEmpty) {
+          final s = allMessage.map<LocalMessage>((e) {
+            final local = LocalMessage.fromJson(e);
+            return local;
+          }).toList();
+          conversation.messages = s;
+        }
+        conversationStream.sink.add([conversation]);
+      });
+    } catch (e) {
+      return null;
     }
   }
 
@@ -188,7 +237,6 @@ class SqfLiteService {
           }).toList();
           conversation.messages = s;
         }
-
         return conversation;
       });
     } catch (e) {
@@ -268,6 +316,20 @@ class SqfLiteService {
     }).toList();
   }
 
+  ///Get all messages from teh DB
+  Future<List<LocalMessage>> getMessages() async {
+    final db = getDatabase();
+
+    final l = await db.query('chats');
+
+    if (l.isEmpty) return [];
+
+    return l.map<LocalMessage>((e) {
+      final local = LocalMessage.fromJson(e);
+      return local;
+    }).toList();
+  }
+
   /// Add a message to the message table as well as the conversation table
   Future<void> addMessage(LocalMessage message) async {
     try {
@@ -289,7 +351,7 @@ class SqfLiteService {
           await txn.update(
             "conversation",
             {"updated_at": DateTime.now().toIso8601String()},
-            where: "id = ?",
+            where: "gpt_id = ?",
             whereArgs: [message.conversationId],
           );
         } else {
@@ -303,14 +365,16 @@ class SqfLiteService {
             await txn.update(
               "conversation",
               {"updated_at": DateTime.now().toIso8601String()},
-              where: "id = ?",
+              where: "gpt_id = ?",
               whereArgs: [message.conversationId],
             );
           }
         }
       });
       messageStream.add(message);
-    } catch (e) {}
+    } catch (e) {
+      print(e);
+    }
   }
 }
 
