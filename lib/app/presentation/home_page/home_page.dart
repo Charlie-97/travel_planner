@@ -7,7 +7,7 @@ import 'package:travel_planner/app/router/base_navigator.dart';
 import 'package:travel_planner/component/constants.dart';
 import 'package:travel_planner/component/overlays/dialogs.dart';
 import 'package:travel_planner/data/model/conversation.dart';
-import 'package:travel_planner/models/sqflite/conversation_model.dart';
+import 'package:travel_planner/data/sqflite/conversation_model.dart';
 import 'package:travel_planner/services/local_storage/sqflite/sqflite_service.dart';
 
 class HomePage extends StatefulWidget {

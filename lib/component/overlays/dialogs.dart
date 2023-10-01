@@ -73,32 +73,10 @@ class AppOverlays {
     return null;
   }
 
-  static dynamic authErrorDialog(
-      {required BuildContext context,
-      bool? passwordMatch,
-      bool? validEmail,
-      bool? validUserName,
-      bool? validPassword,
-      String? optionalMessage}) async {
-    const invalidName = 'Please enter a valid username and try again';
-    const invalidEmail = 'Please enter a valid email address and try again';
-    const invalidPassword = 'Enter a valid password, minimum of 8 characters';
-    const passwordMismatch = 'Passwords do not match';
-
-    String? message;
-
-    if (!(validUserName ?? true)) {
-      message = invalidName;
-    } else if (!(validEmail ?? true)) {
-      message = invalidEmail;
-    } else if (!(validPassword ?? true)) {
-      message = invalidPassword;
-    } else if (!(passwordMatch ?? true)) {
-      message = passwordMismatch;
-    } else if (optionalMessage!.isNotEmpty) {
-      message = optionalMessage;
-    }
-
+  static dynamic authErrorDialog({
+    required BuildContext context,
+    String? message,
+  }) async {
     final s = await showDialog(
       context: context,
       builder: (_) {
@@ -111,6 +89,7 @@ class AppOverlays {
             "Authentication Error",
             style: TextStyle(
               fontWeight: FontWeight.w600,
+              fontSize: 20,
             ),
           ),
           content: Text(
@@ -131,17 +110,14 @@ class AppOverlays {
                 BaseNavigator.pop();
               },
               child: const Text(
-                "Okay",
+                "Ok",
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ),
           ],
-          actionsPadding: const EdgeInsets.only(
-            bottom: 20,
-            right: 24,
-          ),
+          actionsPadding: const EdgeInsets.all(24),
         );
       },
     );

@@ -1,4 +1,4 @@
-import 'package:travel_planner/models/sqflite/message.dart';
+import 'package:travel_planner/data/sqflite/message.dart';
 
 class ConversationModel {
   String? id;
