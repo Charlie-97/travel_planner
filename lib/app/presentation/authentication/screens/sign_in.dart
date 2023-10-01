@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:hng_authentication/authentication.dart';
 import 'package:travel_planner/app/presentation/authentication/screens/sign_up.dart';
 import 'package:travel_planner/app/presentation/authentication/widgets/button.dart';
 import 'package:travel_planner/app/presentation/navigation.dart';
 import 'package:travel_planner/app/router/base_navigator.dart';
+import 'package:travel_planner/component/overlays/dialogs.dart';
 import 'package:travel_planner/component/overlays/loader.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -246,12 +250,46 @@ class _SignInScreenState extends State<SignInScreen> {
                         ),
                         CustomButton(
                           onTap: () async {
-                            isLoading.value = true;
-                            await Future.delayed(
-                                const Duration(milliseconds: 5000));
-                            isLoading.value = false;
-                            BaseNavigator.pushNamedAndclear(
-                                Navigation.routeName);
+                            final email = _userEmail.text;
+                            final password = _userPassword.text;
+
+                            bool validEmail =
+                                validateEmail(email: email) && email.isNotEmpty;
+
+                            bool validPassword = checkPasswordLength(password) &
+                                password.isNotEmpty;
+
+                            if (validEmail && validPassword) {
+                              isLoading.value = true;
+                              // await Future.delayed(
+                              //     const Duration(milliseconds: 5000));
+
+                              try {
+                                final auth = Authentication();
+                                final result = await auth.signIn(
+                                    _userEmail.text, _userPassword.text);
+                                if (result['error'] == null) {
+                                  isLoading.value = false;
+                                  BaseNavigator.pushNamedAndclear(
+                                      Navigation.routeName);
+                                } else {
+                                  isLoading.value = false;
+                                  AppOverlays.authErrorDialog(
+                                      context: context,
+                                      optionalMessage:
+                                          'Email does not exist\nTry signing up instead');
+                                }
+                              } on ApiException catch (e) {
+                                isLoading.value = false;
+                                AppOverlays.authErrorDialog(context: context);
+                                print(e);
+                              }
+                            } else {
+                              AppOverlays.authErrorDialog(
+                                  context: context,
+                                  validEmail: validEmail,
+                                  validPassword: validPassword);
+                            }
                           },
                           title: 'Sign In',
                         ),

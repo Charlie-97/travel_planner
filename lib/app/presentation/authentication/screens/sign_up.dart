@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:travel_planner/app/presentation/authentication/screens/sign_in.dart';
 import 'package:travel_planner/app/presentation/authentication/widgets/button.dart';
-import 'package:travel_planner/app/presentation/navigation.dart';
 import 'package:travel_planner/app/router/base_navigator.dart';
+import 'package:travel_planner/component/overlays/dialogs.dart';
 import 'package:travel_planner/component/overlays/loader.dart';
+import 'package:hng_authentication/authentication.dart';
 
 class SignUpScreen extends StatefulWidget {
   static const routeName = "sign_up";
@@ -130,7 +131,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         TextFormField(
                           focusNode: _usernameFocus,
                           onEditingComplete: () {
-                            _usernameFocus.requestFocus();
+                            _emailFocus.requestFocus();
                           },
                           enableSuggestions: false,
                           autocorrect: false,
@@ -248,6 +249,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         TextFormField(
                           focusNode: _passwordFocus,
                           obscureText: obscurePassword,
+                          onEditingComplete: () {
+                            _confirmPasswordFocus.requestFocus();
+                          },
                           enableSuggestions: false,
                           autocorrect: false,
                           controller: _userPassword,
@@ -388,12 +392,59 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         const SizedBox(height: 40),
                         CustomButton(
                           onTap: () async {
-                            isLoading.value = true;
-                            await Future.delayed(
-                                const Duration(milliseconds: 5000));
-                            isLoading.value = false;
-                            BaseNavigator.pushNamedAndclear(
-                                Navigation.routeName);
+                            final email = _userEmail.text;
+                            final password = _userPassword.text;
+                            final confirmPassword =
+                                _userPasswordConfirmation.text;
+                            final name = _username.text;
+
+                            bool passwordMatch = checkPasswordsMatch(
+                                    password: password,
+                                    passwordConfirmation: confirmPassword) &&
+                                confirmPassword.isNotEmpty;
+                            bool validEmail =
+                                validateEmail(email: email) && email.isNotEmpty;
+                            bool validUserName = name.isNotEmpty;
+                            bool validPassword = checkPasswordLength(password) &
+                                password.isNotEmpty;
+
+                            if (validEmail &&
+                                validPassword &&
+                                passwordMatch &&
+                                validUserName) {
+                              isLoading.value = true;
+
+                              final auth = Authentication();
+
+                              try {
+                                final result =
+                                    await auth.signUp(email, name, password);
+
+                                print(result);
+
+                                if (result['error'] == null) {
+                                  isLoading.value = false;
+                                  BaseNavigator.pushNamedAndclear(
+                                      SignInScreen.routeName);
+                                } else {
+                                  isLoading.value = false;
+                                  AppOverlays.authErrorDialog(
+                                      context: context,
+                                      optionalMessage:
+                                          'Email already in use\nPlease try again with another valid email');
+                                }
+                              } on ApiException catch (e) {
+                                isLoading.value = false;
+                                AppOverlays.authErrorDialog(context: context);
+                              }
+                            } else {
+                              AppOverlays.authErrorDialog(
+                                  context: context,
+                                  passwordMatch: passwordMatch,
+                                  validEmail: validEmail,
+                                  validUserName: validUserName,
+                                  validPassword: validPassword);
+                            }
                           },
                           title: "Sign up",
                         ),
