@@ -122,10 +122,10 @@ class _HomePageState extends State<HomePage> {
                   ),
                   trailing: IconButton(
                     onPressed: () async {
-                      final result = await AppOverlays.showDeleteConversationDialog(context);
+                      final bool? result = await AppOverlays.showDeleteConversationDialog(context);
                       if (!mounted) return;
                       if (result != null) {
-                        if (result == true) {
+                        if (result) {
                           await sqlDb.deleteConversation(conversations[index].gptId!);
                           refreshConversations();
                         }
