@@ -20,8 +20,7 @@ class _EditProfileState extends State<EditProfile> {
   bool obscurePasswordConfirmation = true;
 
   late TextEditingController _newEmail = TextEditingController(text: oldEmail);
-  late TextEditingController _newUserName =
-      TextEditingController(text: oldName);
+  late TextEditingController _newUserName = TextEditingController(text: oldName);
   TextEditingController _newPassword = TextEditingController();
   TextEditingController _confirmNewPassword = TextEditingController();
 
@@ -29,10 +28,7 @@ class _EditProfileState extends State<EditProfile> {
   Icon confirmPasswordVisibilityIcon = const Icon(Icons.visibility);
 
   bool validateEmail({required String email}) {
-    return ((email.contains('@') &&
-            email.contains('.') &&
-            (email.substring(email.length - 1) != '.' &&
-                email.substring(email.length - 1) != '@'))) ||
+    return ((email.contains('@') && email.contains('.') && (email.substring(email.length - 1) != '.' && email.substring(email.length - 1) != '@'))) ||
         email.isEmpty;
   }
 
@@ -108,8 +104,7 @@ class _EditProfileState extends State<EditProfile> {
                         Icons.person,
                         size: 20,
                       ),
-                      prefixIconColor:
-                          Theme.of(context).colorScheme.onBackground,
+                      prefixIconColor: Theme.of(context).colorScheme.onBackground,
                       border: InputBorder.none,
                       filled: true,
                       fillColor: Colors.grey.shade100,
@@ -119,18 +114,15 @@ class _EditProfileState extends State<EditProfile> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide:
-                            BorderSide(color: Theme.of(context).primaryColor),
+                        borderSide: BorderSide(color: Theme.of(context).primaryColor),
                       ),
                       errorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.error),
+                        borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
                       ),
                       focusedErrorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.error),
+                        borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
                       ),
                       // errorText: validateEmail(email: _userEmail.text) ? null : 'Enter your full name',
                     ),
@@ -154,8 +146,7 @@ class _EditProfileState extends State<EditProfile> {
                         Icons.email,
                         size: 20,
                       ),
-                      prefixIconColor:
-                          Theme.of(context).colorScheme.onBackground,
+                      prefixIconColor: Theme.of(context).colorScheme.onBackground,
                       border: InputBorder.none,
                       filled: true,
                       fillColor: Colors.grey.shade100,
@@ -165,22 +156,17 @@ class _EditProfileState extends State<EditProfile> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide:
-                            BorderSide(color: Theme.of(context).primaryColor),
+                        borderSide: BorderSide(color: Theme.of(context).primaryColor),
                       ),
                       errorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.error),
+                        borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
                       ),
                       focusedErrorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.error),
+                        borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
                       ),
-                      errorText: validateEmail(email: _newEmail.text)
-                          ? null
-                          : 'Enter a valid email address',
+                      errorText: validateEmail(email: _newEmail.text) ? null : 'Enter a valid email address',
                     ),
                   ),
                   const SizedBox(

@@ -6,7 +6,6 @@ import 'package:travel_planner/app/presentation/settings/screen/edit_profile.dar
 import 'package:travel_planner/app/presentation/home_page/home_page.dart';
 import 'package:travel_planner/app/presentation/navigation.dart';
 import 'package:travel_planner/app/presentation/splash/splash_screen.dart';
-import 'package:travel_planner/data/model/conversation.dart';
 
 class AppRouter {
   /// A custom screen navigation handler that handles the animation of moving from one screen to another
@@ -54,10 +53,14 @@ class AppRouter {
       case HomePage.routeName:
         return _getPageRoute(const HomePage());
       case ChatScreen.routeName:
-        final s = settings.arguments as ObjConversation;
-        return _getPageRoute(ChatScreen(
-          conversation: s,
-        ));
+        if (settings.arguments != null) {
+          final s = settings.arguments as Map<String, dynamic>;
+          return _getPageRoute(ChatScreen(
+            conversation: s["conversation"],
+            conversationModel: s['conversationModel'],
+          ));
+        }
+        return _getPageRoute(const ChatScreen());
       case SignInScreen.routeName:
         return _getPageRoute(const SignInScreen());
       case EditProfile.routeName:
