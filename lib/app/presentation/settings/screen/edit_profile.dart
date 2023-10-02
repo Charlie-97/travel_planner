@@ -33,6 +33,14 @@ class _EditProfileState extends State<EditProfile> {
       user = storeUser;
       _newEmail = TextEditingController(text: user.email);
       _newUserName = TextEditingController(text: user.name);
+    } else {
+      user = User(
+        name: "Test planner",
+        email: "example@test.com",
+        credits: 2,
+      );
+      _newEmail = TextEditingController(text: "example@test.com");
+      _newUserName = TextEditingController(text: "Test planner");
     }
   }
 

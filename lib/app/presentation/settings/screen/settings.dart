@@ -32,6 +32,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final storeUser = storage.getUserData();
     if (storeUser != null) {
       user = storeUser;
+    } else {
+      user = User(
+        name: "Test planner",
+        email: "example@test.com",
+        credits: 2,
+      );
     }
   }
 
@@ -114,42 +120,49 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           final result = await _showLogoutConfirmationDialog(context);
                           if (!mounted) return;
                           if (result == true) {
-                            try {
-                              isLoading.value = true;
-                              navigationIconLoading = true;
-                              setState(() {});
-                              final result = await auth.logout(user.email!);
-                              final response = AuthBaseResponse.fromJson(result);
-                              if (response.error != null) {
-                                isLoading.value = false;
-                                navigationIconLoading = false;
-                                setState(() {});
-                                if (mounted) {
-                                  AppOverlays.authErrorDialog(
-                                    context: context,
-                                    message: response.message,
-                                  );
-                                }
-                              } else {
-                                if (response.message?.toLowerCase() == "success") {
-                                  storage.clearUser();
-                                  isLoading.value = false;
-                                  navigationIconLoading = false;
-                                  sqlDb.deleteDb();
-                                  setState(() {});
-                                  BaseNavigator.pushNamedAndclear(SignInScreen.routeName);
-                                }
-                              }
-                            } catch (e) {
-                              isLoading.value = false;
-                              navigationIconLoading = false;
-                              setState(() {});
-                              if (mounted) {
-                                AppOverlays.authErrorDialog(
-                                  context: context,
-                                );
-                              }
-                            }
+                            isLoading.value = true;
+                            navigationIconLoading = true;
+                            // try {
+                            //   isLoading.value = true;
+                            //   navigationIconLoading = true;
+                            //   setState(() {});
+                            //   final result = await auth.logout(user.email!);
+                            //   final response = AuthBaseResponse.fromJson(result);
+                            //   if (response.error != null) {
+                            //     isLoading.value = false;
+                            //     navigationIconLoading = false;
+                            //     setState(() {});
+                            //     if (mounted) {
+                            //       AppOverlays.authErrorDialog(
+                            //         context: context,
+                            //         message: response.message,
+                            //       );
+                            //     }
+                            //   } else {
+                            //     if (response.message?.toLowerCase() == "success") {
+                            //       storage.clearUser();
+                            //       isLoading.value = false;
+                            //       navigationIconLoading = false;
+                            //       sqlDb.deleteDb();
+                            //       setState(() {});
+                            //       BaseNavigator.pushNamedAndclear(SignInScreen.routeName);
+                            //     }
+                            //   }
+                            // } catch (e) {
+                            //   isLoading.value = false;
+                            //   navigationIconLoading = false;
+                            //   setState(() {});
+                            //   if (mounted) {
+                            //     AppOverlays.authErrorDialog(
+                            //       context: context,
+                            //     );
+                            //   }
+                            // }
+                            await Future.delayed(const Duration(milliseconds: 5000));
+                            isLoading.value = false;
+                            navigationIconLoading = false;
+                            setState(() {});
+                            BaseNavigator.pushNamedAndclear(SignInScreen.routeName);
                           }
                         },
                         overlayColor: const MaterialStatePropertyAll(Colors.transparent),
