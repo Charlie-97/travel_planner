@@ -2,7 +2,9 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:travel_planner/app/presentation/authentication/screens/sign_in.dart';
+import 'package:travel_planner/app/presentation/navigation.dart';
 import 'package:travel_planner/app/router/base_navigator.dart';
+import 'package:travel_planner/services/local_storage/shared_prefs.dart';
 
 class SplashScreen extends StatefulWidget {
   static const routeName = "splash";
@@ -13,6 +15,8 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final storage = AppStorage.instance;
+
   @override
   void initState() {
     super.initState();
@@ -21,7 +25,11 @@ class _SplashScreenState extends State<SplashScreen> {
 
   initCheck() async {
     await Future.delayed(const Duration(milliseconds: 2200));
-    BaseNavigator.pushNamedAndclear(SignInScreen.routeName);
+    if (storage.getUserData() == null) {
+      BaseNavigator.pushNamedAndclear(SignInScreen.routeName);
+    } else {
+      BaseNavigator.pushNamedAndclear(Navigation.routeName);
+    }
   }
 
   @override

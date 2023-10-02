@@ -8,6 +8,8 @@ import 'package:travel_planner/services/local_storage/object_box/object_box_stor
 import 'package:travel_planner/services/local_storage/shared_prefs.dart';
 import 'package:travel_planner/services/local_storage/sqflite/sqflite_service.dart';
 
+bool navigationIconLoading = false;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   objectbox = await ObjectBox.create();
