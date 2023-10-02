@@ -3,8 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:travel_planner/app/presentation/splash/splash_screen.dart';
 import 'package:travel_planner/app/router/app_router.dart';
 import 'package:travel_planner/app/router/base_navigator.dart';
-import 'package:travel_planner/component/constants.dart';
-import 'package:travel_planner/services/local_storage/object_box/object_box_store.dart';
 import 'package:travel_planner/services/local_storage/shared_prefs.dart';
 import 'package:travel_planner/services/local_storage/sqflite/sqflite_service.dart';
 
@@ -12,7 +10,6 @@ bool navigationIconLoading = false;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  objectbox = await ObjectBox.create();
   await AppStorage.instance.initialize();
   SqfLiteService.instance.openDb();
   runApp(
