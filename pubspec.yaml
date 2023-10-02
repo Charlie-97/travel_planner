@@ -15,7 +15,10 @@ dependencies:
     sdk: flutter
   font_awesome_flutter: ^10.5.0
   google_fonts: ^6.1.0
-  hng_authentication: ^0.0.3
+  hng_authentication: 
+  # ^0.0.3
+    git:
+      url: https://github.com/Oladips/team-fl-package-
   http: ^1.1.0
   intl: ^0.18.1
   lottie: ^2.6.0
