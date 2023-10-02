@@ -71,6 +71,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ),
                               ),
                               Text(user.email ?? ""),
+                              const SizedBox(height: 5),
+                              Text(
+                                "${user.credits} credits",
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
                             ],
                           )
                         ],
