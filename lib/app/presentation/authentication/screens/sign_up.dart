@@ -433,36 +433,40 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           CustomButton(
                             onTap: () async {
                               if (_formKey.currentState!.validate()) {
-                                try {
-                                  isLoading.value = true;
-                                  final result = await auth.signUp(
-                                    _userEmail.text,
-                                    _username.text,
-                                    _userPassword.text,
-                                  );
-                                  final response = AuthBaseResponse.fromJson(result);
-                                  if (response.error != null) {
-                                    isLoading.value = false;
-                                    if (mounted) {
-                                      AppOverlays.authErrorDialog(
-                                        context: context,
-                                        message: response.message,
-                                      );
-                                    }
-                                  } else {
-                                    final user = User.fromJson(response.data);
-                                    storage.saveUser(user.toJson());
-                                    isLoading.value = false;
-                                    BaseNavigator.pushNamedAndclear(Navigation.routeName);
-                                  }
-                                } catch (e) {
-                                  isLoading.value = false;
-                                  if (mounted) {
-                                    AppOverlays.authErrorDialog(
-                                      context: context,
-                                    );
-                                  }
-                                }
+                                isLoading.value = true;
+                                // try {
+                                //   isLoading.value = true;
+                                //   final result = await auth.signUp(
+                                //     _userEmail.text,
+                                //     _username.text,
+                                //     _userPassword.text,
+                                //   );
+                                //   final response = AuthBaseResponse.fromJson(result);
+                                //   if (response.error != null) {
+                                //     isLoading.value = false;
+                                //     if (mounted) {
+                                //       AppOverlays.authErrorDialog(
+                                //         context: context,
+                                //         message: response.message,
+                                //       );
+                                //     }
+                                //   } else {
+                                //     final user = User.fromJson(response.data);
+                                //     storage.saveUser(user.toJson());
+                                //     isLoading.value = false;
+                                //     BaseNavigator.pushNamedAndclear(Navigation.routeName);
+                                //   }
+                                // } catch (e) {
+                                //   isLoading.value = false;
+                                //   if (mounted) {
+                                //     AppOverlays.authErrorDialog(
+                                //       context: context,
+                                //     );
+                                //   }
+                                // }
+                                await Future.delayed(const Duration(milliseconds: 5000));
+                                isLoading.value = false;
+                                BaseNavigator.pushNamedAndclear(Navigation.routeName);
                               }
                             },
                             title: "Sign up",
