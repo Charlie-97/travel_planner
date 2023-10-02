@@ -2,8 +2,8 @@ import 'package:chatview/chatview.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_planner/app/presentation/chat/widgets/chat_bubble.dart';
 import 'package:travel_planner/data/model/conversation.dart';
-import 'package:travel_planner/models/sqflite/conversation_model.dart';
-import 'package:travel_planner/models/sqflite/message.dart';
+import 'package:travel_planner/data/sqflite/conversation_model.dart';
+import 'package:travel_planner/data/sqflite/message.dart';
 import 'package:travel_planner/services/local_storage/sqflite/sqflite_service.dart';
 import 'package:uuid/uuid.dart';
 

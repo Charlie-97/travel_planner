@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:travel_planner/models/sqflite/conversation_model.dart';
-import 'package:travel_planner/models/sqflite/message.dart';
+import 'package:travel_planner/data/sqflite/conversation_model.dart';
+import 'package:travel_planner/data/sqflite/message.dart';
 
 class SqfLiteService {
   SqfLiteService._();

@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
-import 'package:objectbox/objectbox.dart';
 import 'package:travel_planner/app/presentation/chat/screen/chat_screen.dart';
 import 'package:travel_planner/app/router/base_navigator.dart';
-import 'package:travel_planner/component/constants.dart';
 import 'package:travel_planner/component/overlays/dialogs.dart';
-import 'package:travel_planner/data/model/conversation.dart';
-import 'package:travel_planner/models/sqflite/conversation_model.dart';
+import 'package:travel_planner/data/sqflite/conversation_model.dart';
 import 'package:travel_planner/services/local_storage/sqflite/sqflite_service.dart';
 
 class HomePage extends StatefulWidget {
@@ -20,7 +17,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final SqfLiteService sqlDb = SqfLiteService.instance;
-  final Box<ObjConversation> box = objectbox.store.box<ObjConversation>();
 
   List<ConversationModel> conversations = [];
 
