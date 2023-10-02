@@ -9,6 +9,7 @@ import 'package:travel_planner/data/model/auth/auth_base_response.dart';
 import 'package:travel_planner/data/model/auth/user.dart';
 import 'package:travel_planner/main.dart';
 import 'package:travel_planner/services/local_storage/shared_prefs.dart';
+import 'package:travel_planner/services/local_storage/sqflite/sqflite_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -20,6 +21,7 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   final storage = AppStorage.instance;
   final auth = Authentication();
+  final sqlDb = SqfLiteService.instance;
 
   ValueNotifier isLoading = ValueNotifier(false);
 
@@ -133,6 +135,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   storage.clearUser();
                                   isLoading.value = false;
                                   navigationIconLoading = false;
+                                  sqlDb.deleteDb();
                                   setState(() {});
                                   BaseNavigator.pushNamedAndclear(SignInScreen.routeName);
                                 }
