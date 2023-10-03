@@ -411,11 +411,12 @@ packages:
   hng_authentication:
     dependency: "direct main"
     description:
-      name: hng_authentication
-      sha256: "111b17bae6fca6069014c6e883f408c2632a46919ce43ae1d72911cf6189c88c"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.3"
+      path: "."
+      ref: HEAD
+      resolved-ref: f91de57659f05b60dd21581a3f1122dd1fa5f792
+      url: "https://github.com/Oladips/team-fl-package-"
+    source: git
+    version: "0.1.1"
   html:
     dependency: transitive
     description:
