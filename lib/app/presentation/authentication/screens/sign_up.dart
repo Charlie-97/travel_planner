@@ -9,6 +9,7 @@ import 'package:hng_authentication/authentication.dart';
 import 'package:travel_planner/data/model/auth/auth_base_response.dart';
 import 'package:travel_planner/data/model/auth/user.dart';
 import 'package:travel_planner/services/local_storage/shared_prefs.dart';
+import 'package:travel_planner/services/local_storage/sqflite/sqflite_service.dart';
 
 class SignUpScreen extends StatefulWidget {
   static const routeName = "sign_up";
@@ -39,6 +40,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   final auth = Authentication();
   final storage = AppStorage.instance;
+
+  final sqlDb = SqfLiteService.instance;
 
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
@@ -440,20 +443,43 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     _username.text,
                                     _userPassword.text,
                                   );
-                                  final response = AuthBaseResponse.fromJson(result);
-                                  if (response.error != null) {
+                                  if (result != null) {
+                                    final response = AuthBaseResponse.fromJson(result["response"]);
+                                    if (response.error != null) {
+                                      isLoading.value = false;
+                                      if (mounted) {
+                                        AppOverlays.authErrorDialog(
+                                          context: context,
+                                          message: response.message,
+                                        );
+                                      }
+                                    } else {
+                                      final user = User.fromJson(response.data);
+                                      final storeUser = storage.getUserData();
+                                      if (storeUser != null) {
+                                        if (user.id != storeUser.id) {
+                                          sqlDb.deleteDb();
+                                          storage.clearToken();
+                                        }
+                                      }
+                                      if (result["headers"] != null) {
+                                        final headers = result["headers"];
+                                        final headerString = headers["set-cookie"] as String;
+                                        if (headers["set-cookie"] != null) {
+                                          storage.saveUserToken(headerString.substring(0, headerString.indexOf(";")));
+                                        }
+                                      }
+                                      storage.saveUser(user.toJson());
+                                      isLoading.value = false;
+                                      BaseNavigator.pushNamedAndclear(Navigation.routeName);
+                                    }
+                                  } else {
                                     isLoading.value = false;
                                     if (mounted) {
                                       AppOverlays.authErrorDialog(
                                         context: context,
-                                        message: response.message,
                                       );
                                     }
-                                  } else {
-                                    final user = User.fromJson(response.data);
-                                    storage.saveUser(user.toJson());
-                                    isLoading.value = false;
-                                    BaseNavigator.pushNamedAndclear(Navigation.routeName);
                                   }
                                 } catch (e) {
                                   isLoading.value = false;

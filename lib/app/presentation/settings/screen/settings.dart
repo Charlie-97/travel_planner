@@ -26,6 +26,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
   ValueNotifier isLoading = ValueNotifier(false);
 
   late User user;
+
+  getUser() async {
+    try {
+      final result = await auth.getUser(storage.getToken());
+      if (result != null) {
+        final response = AuthBaseResponse.fromJson(result["response"]);
+        if (response.error == null) {
+          final dbUser = User.fromJson(response.data);
+          if (result["headers"] != null) {
+            final headers = result["headers"];
+            final headerString = headers["set-cookie"] as String;
+            if (headers["set-cookie"] != null) {
+              storage.saveUserToken(headerString.substring(0, headerString.indexOf(";")));
+            }
+          }
+          storage.saveUser(dbUser.toJson());
+          user = dbUser;
+          setState(() {});
+        }
+      }
+    } catch (_) {}
+  }
+
   @override
   void initState() {
     super.initState();
@@ -39,6 +62,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         credits: 2,
       );
     }
+    getUser();
   }
 
   @override
@@ -138,10 +162,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 }
                               } else {
                                 if (response.message?.toLowerCase() == "success") {
-                                  storage.clearUser();
+                                  storage.clearToken();
                                   isLoading.value = false;
                                   navigationIconLoading = false;
-                                  sqlDb.deleteDb();
                                   setState(() {});
                                   BaseNavigator.pushNamedAndclear(SignInScreen.routeName);
                                 }

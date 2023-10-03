@@ -9,6 +9,7 @@ import 'package:travel_planner/component/overlays/loader.dart';
 import 'package:travel_planner/data/model/auth/auth_base_response.dart';
 import 'package:travel_planner/data/model/auth/user.dart';
 import 'package:travel_planner/services/local_storage/shared_prefs.dart';
+import 'package:travel_planner/services/local_storage/sqflite/sqflite_service.dart';
 
 class SignInScreen extends StatefulWidget {
   static const routeName = "sign_in";
@@ -21,6 +22,8 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   late final TextEditingController _userEmail;
   late final TextEditingController _userPassword;
+
+  final sqlDb = SqfLiteService.instance;
 
   bool obscurePassword = true;
   String? emailErrorText;
@@ -59,7 +62,8 @@ class _SignInScreenState extends State<SignInScreen> {
 
   @override
   void initState() {
-    _userEmail = TextEditingController();
+    final user = storage.getUserData();
+    _userEmail = TextEditingController(text: user?.email ?? "");
     _userPassword = TextEditingController();
     super.initState();
   }
@@ -258,20 +262,43 @@ class _SignInScreenState extends State<SignInScreen> {
                                     _userEmail.text,
                                     _userPassword.text,
                                   );
-                                  final response = AuthBaseResponse.fromJson(result);
-                                  if (response.error != null) {
+                                  if (result != null) {
+                                    final response = AuthBaseResponse.fromJson(result["response"]);
+                                    if (response.error != null) {
+                                      isLoading.value = false;
+                                      if (mounted) {
+                                        AppOverlays.authErrorDialog(
+                                          context: context,
+                                          message: response.message,
+                                        );
+                                      }
+                                    } else {
+                                      final user = User.fromJson(response.data);
+                                      final storeUser = storage.getUserData();
+                                      if (storeUser != null) {
+                                        if (user.id != storeUser.id) {
+                                          sqlDb.deleteDb();
+                                          storage.clearToken();
+                                        }
+                                      }
+                                      if (result["headers"] != null) {
+                                        final headers = result["headers"];
+                                        final headerString = headers["set-cookie"] as String;
+                                        if (headers["set-cookie"] != null) {
+                                          storage.saveUserToken(headerString.substring(0, headerString.indexOf(";")));
+                                        }
+                                      }
+                                      storage.saveUser(user.toJson());
+                                      isLoading.value = false;
+                                      BaseNavigator.pushNamedAndclear(Navigation.routeName);
+                                    }
+                                  } else {
                                     isLoading.value = false;
                                     if (mounted) {
                                       AppOverlays.authErrorDialog(
                                         context: context,
-                                        message: response.message,
                                       );
                                     }
-                                  } else {
-                                    final user = User.fromJson(response.data);
-                                    storage.saveUser(user.toJson());
-                                    isLoading.value = false;
-                                    BaseNavigator.pushNamedAndclear(Navigation.routeName);
                                   }
                                 } catch (e) {
                                   isLoading.value = false;
