@@ -13,7 +13,8 @@ class AppStorage {
   AppStorage._instance();
 
   Future initialize() async {
-    _sharedPreferences = await SharedPreferences.getInstance().then((value) async {
+    _sharedPreferences =
+        await SharedPreferences.getInstance().then((value) async {
       return value;
     });
   }
@@ -33,12 +34,12 @@ class AppStorage {
     );
   }
 
-  User? getUserData() {
+  AppUser? getUserData() {
     final q = _sharedPreferences.getString(AppKeys.profile);
     if (q == null) {
       return null;
     }
-    User userData = User.fromJson(
+    AppUser userData = AppUser.fromJson(
       json.decode(_sharedPreferences.getString(AppKeys.profile) ?? ""),
     );
     return userData;

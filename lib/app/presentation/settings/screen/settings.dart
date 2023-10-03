@@ -25,7 +25,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   ValueNotifier isLoading = ValueNotifier(false);
 
-  late User user;
+  late AppUser user;
   @override
   void initState() {
     super.initState();
@@ -33,7 +33,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (storeUser != null) {
       user = storeUser;
     } else {
-      user = User(
+      user = AppUser(
         name: "Test planner",
         email: "example@test.com",
         credits: 2,
@@ -117,7 +117,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       const Spacer(),
                       InkWell(
                         onTap: () async {
-                          final result = await _showLogoutConfirmationDialog(context);
+                          final result =
+                              await _showLogoutConfirmationDialog(context);
                           if (!mounted) return;
                           if (result == true) {
                             try {
@@ -159,7 +160,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             }
                           }
                         },
-                        overlayColor: const MaterialStatePropertyAll(Colors.transparent),
+                        overlayColor:
+                            const MaterialStatePropertyAll(Colors.transparent),
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
