@@ -205,7 +205,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
       messageLogs.insert(
         1,
-        "AI: Understood. I'm here to assist with any travel-related questions or planning. Please feel free to ask anything related to travel, and I'll do my best to provide you with the information you need",
+        "AI: Understood. I'm here to assist with any travel planning. Please feel free to ask any questions or seek assistance related to travel arrangements,destinations,itineraries, accommodations, and related topics, and I'll be happy to help",
       );
 
       addMessageTolocalDB(newMessage);
