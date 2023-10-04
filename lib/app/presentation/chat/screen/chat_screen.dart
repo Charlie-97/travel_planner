@@ -32,7 +32,7 @@ class _ChatScreenState extends State<ChatScreen> {
   ScrollController scrollController = ScrollController();
   final openAi = OpenApiRepo.instance;
 
-  ValueNotifier sendLoading = ValueNotifier(false);
+  ValueNotifier<bool> sendLoading = ValueNotifier(false);
 
   final uid = const Uuid();
 
@@ -71,7 +71,8 @@ class _ChatScreenState extends State<ChatScreen> {
         final id = uid.v1();
         final uiMessage = Message(
           id: id,
-          message: "Hello Traveller! 👋 \n\nHow can I assist you today with your travel plans?",
+          message:
+              "Hello Traveller! 👋 \n\nHow can I assist you today with your travel plans?",
           createdAt: DateTime.now(),
           sendBy: "AI",
         );
@@ -95,7 +96,8 @@ class _ChatScreenState extends State<ChatScreen> {
             if (element.message == prompt) {
               return Message(
                 id: element.id.toString(),
-                message: "Hello Traveller! 👋 \n\nHow can I assist you today with your travel plans?",
+                message:
+                    "Hello Traveller! 👋 \n\nHow can I assist you today with your travel plans?",
                 createdAt: element.createdAt!,
                 sendBy: element.sentBy!,
               );
@@ -112,7 +114,8 @@ class _ChatScreenState extends State<ChatScreen> {
           final id = uid.v1();
           final uiMessage = Message(
             id: id,
-            message: "Hello Traveller! 👋 \n\nHow can I assist you today with your travel plans?",
+            message:
+                "Hello Traveller! 👋 \n\nHow can I assist you today with your travel plans?",
             createdAt: DateTime.now(),
             sendBy: "AI",
           );
@@ -159,7 +162,8 @@ class _ChatScreenState extends State<ChatScreen> {
       message: message.message,
       sentBy: message.sendBy,
       createdAt: message.createdAt,
-      imageUrl: message.messageType == MessageType.image ? message.message : null,
+      imageUrl:
+          message.messageType == MessageType.image ? message.message : null,
     );
     sqlDb.addMessage(localMessage);
   }
@@ -194,7 +198,8 @@ class _ChatScreenState extends State<ChatScreen> {
       for (var element in messages) {
         sendingMessage = element.message;
         sender = element.sendBy;
-        if (sendingMessage == "Hello Traveller! 👋 \n\nHow can I assist you today with your travel plans?") {
+        if (sendingMessage ==
+            "Hello Traveller! 👋 \n\nHow can I assist you today with your travel plans?") {
           sendingMessage = prompt;
           sender = "user";
         }
@@ -205,7 +210,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
       messageLogs.insert(
         1,
-        "AI: Understood. I'm here to assist with any travel planning. Please feel free to ask any questions or seek assistance related to travel arrangements,destinations,itineraries, accommodations, and related topics, and I'll be happy to help",
+        "AI: Of course! I'm here to help you with your travel planning needs. Please feel free to ask any questions related to travel, and I'll be happy to assist you in a friendly manner. If you have any non-travel related questions or statements, I'll kindly let you know that I focus on travel planning and can't provide assistance for other topics. How can I assist you with your travel plans today? 😊",
       );
 
       addMessageTolocalDB(newMessage);
@@ -230,10 +235,12 @@ class _ChatScreenState extends State<ChatScreen> {
         _chatController?.addMessage(reply);
         sendLoading.value = false;
         Future.delayed(const Duration(milliseconds: 300), () {
-          _chatController?.initialMessageList.last.setStatus = MessageStatus.undelivered;
+          _chatController?.initialMessageList.last.setStatus =
+              MessageStatus.undelivered;
         });
         Future.delayed(const Duration(milliseconds: 300), () {
-          _chatController?.initialMessageList.last.setStatus = MessageStatus.read;
+          _chatController?.initialMessageList.last.setStatus =
+              MessageStatus.read;
         });
       } else {
         sendLoading.value = false;
@@ -281,63 +288,77 @@ class _ChatScreenState extends State<ChatScreen> {
     return Scaffold(
       body: SafeArea(
         child: _chatController != null
-            ? ChatView(
-                appBar: AppBar(
-                  title: Text(conversationModel.title ?? "TRAVEL PLANNER"),
-                  backgroundColor: Colors.transparent,
-                  scrolledUnderElevation: 0,
-                ),
-                chatBackgroundConfig: const ChatBackgroundConfiguration(
-                  backgroundColor: Colors.transparent,
-                ),
-                sendMessageConfig: SendMessageConfiguration(
-                  textFieldBackgroundColor: Colors.blue[50],
-                  defaultSendButtonColor: Colors.blue[400],
-                  textFieldConfig: const TextFieldConfiguration(
-                    margin: EdgeInsets.symmetric(horizontal: 8),
-                    borderRadius: BorderRadius.all(Radius.circular(12)),
-                    textStyle: TextStyle(
-                      color: Colors.black,
+            ? ValueListenableBuilder(
+                valueListenable: sendLoading,
+                builder: (context, loading, _) {
+                  return ChatView(
+                    appBar: AppBar(
+                      title: Text(conversationModel.title ?? "TRAVEL PLANNER"),
+                      backgroundColor: Colors.transparent,
+                      scrolledUnderElevation: 0,
                     ),
-                  ),
-                  sendButtonIcon: ValueListenableBuilder(
-                    valueListenable: sendLoading,
-                    builder: (context, value, _) {
-                      if (value) {
-                        return const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                      return const Icon(
-                        Icons.send,
-                      );
-                    },
-                  ),
-                  enableCameraImagePicker: false,
-                  enableGalleryImagePicker: false,
-                  allowRecordingVoice: false,
-                ),
-                chatController: _chatController!,
-                onSendTap: _onSendTap,
-                currentUser: currentUser,
-                chatViewState: messages.isNotEmpty ? ChatViewState.hasMessages : ChatViewState.noData,
-                chatBubbleConfig: ChatBubbleConfiguration(
-                  maxWidth: MediaQuery.of(context).size.width * .7,
-                  inComingChatBubbleConfig: chatBubble(
-                    sentByUser: false,
-                    color: Colors.blue[400],
-                    textColor: Colors.white,
-                  ),
-                  outgoingChatBubbleConfig: chatBubble(
-                    sentByUser: true,
-                    color: Colors.blue[200],
-                    textColor: Colors.black,
-                  ),
-                ),
-                chatViewStateConfig: const ChatViewStateConfiguration(noMessageWidgetConfig: ChatViewStateWidgetConfiguration(widget: SizedBox())),
-              )
+                    chatBackgroundConfig: const ChatBackgroundConfiguration(
+                      backgroundColor: Colors.transparent,
+                    ),
+                    showTypingIndicator: loading,
+                    typeIndicatorConfig: TypeIndicatorConfiguration(
+                      indicatorSize: 5,
+                      flashingCircleBrightColor: Colors.white,
+                      flashingCircleDarkColor: Colors.grey.shade200
+                    ),
+                    sendMessageConfig: SendMessageConfiguration(
+                      textFieldBackgroundColor: Colors.blue[50],
+                      defaultSendButtonColor: Colors.blue[400],
+                      textFieldConfig: const TextFieldConfiguration(
+                        margin: EdgeInsets.symmetric(horizontal: 8),
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        textStyle: TextStyle(
+                          color: Colors.black,
+                        ),
+                      ),
+                      sendButtonIcon: ValueListenableBuilder(
+                        valueListenable: sendLoading,
+                        builder: (context, value, _) {
+                          if (value) {
+                            return const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          return const Icon(
+                            Icons.send,
+                          );
+                        },
+                      ),
+                      enableCameraImagePicker: false,
+                      enableGalleryImagePicker: false,
+                      allowRecordingVoice: false,
+                    ),
+                    chatController: _chatController!,
+                    onSendTap: _onSendTap,
+                    currentUser: currentUser,
+                    chatViewState: messages.isNotEmpty
+                        ? ChatViewState.hasMessages
+                        : ChatViewState.noData,
+                    chatBubbleConfig: ChatBubbleConfiguration(
+                      maxWidth: MediaQuery.of(context).size.width * .7,
+                      inComingChatBubbleConfig: chatBubble(
+                        sentByUser: false,
+                        color: Colors.blue[400],
+                        textColor: Colors.white,
+                      ),
+                      outgoingChatBubbleConfig: chatBubble(
+                        sentByUser: true,
+                        color: Colors.blue[200],
+                        textColor: Colors.black,
+                      ),
+                    ),
+                    chatViewStateConfig: const ChatViewStateConfiguration(
+                        noMessageWidgetConfig: ChatViewStateWidgetConfiguration(
+                            widget: SizedBox())),
+                  );
+                })
             : const Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
