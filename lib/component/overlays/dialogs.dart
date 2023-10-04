@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:travel_planner/app/presentation/settings/screen/payment_screen.dart';
 import 'package:travel_planner/app/router/base_navigator.dart';
 
 class AppOverlays {
@@ -231,6 +232,7 @@ class AppOverlays {
               overlayColor: const MaterialStatePropertyAll(Colors.transparent),
               onTap: () async {
                 BaseNavigator.pop(true);
+                BaseNavigator.pushNamedAndReplace(PaymentScreen.routeName);
               },
               child: const Text(
                 "Continue",
