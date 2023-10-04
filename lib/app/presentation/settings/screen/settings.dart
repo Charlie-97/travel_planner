@@ -141,7 +141,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       const Spacer(),
                       InkWell(
                         onTap: () async {
-                          final result = await _showLogoutConfirmationDialog(context);
+                          final result =
+                              await _showLogoutConfirmationDialog(context);
                           if (!mounted) return;
                           if (result == true) {
                             try {
@@ -182,7 +183,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             }
                           }
                         },
-                        overlayColor: const MaterialStatePropertyAll(Colors.transparent),
+                        overlayColor:
+                            const MaterialStatePropertyAll(Colors.transparent),
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [

@@ -14,7 +14,8 @@ class AppStorage {
   AppStorage._instance();
 
   Future initialize() async {
-    _sharedPreferences = await SharedPreferences.getInstance().then((value) async {
+    _sharedPreferences =
+        await SharedPreferences.getInstance().then((value) async {
       return value;
     });
   }

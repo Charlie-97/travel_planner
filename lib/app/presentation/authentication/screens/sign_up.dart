@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:hng_authentication/authentication.dart';
 import 'package:travel_planner/app/presentation/authentication/screens/sign_in.dart';
 import 'package:travel_planner/app/presentation/authentication/widgets/button.dart';
 import 'package:travel_planner/app/presentation/navigation.dart';
 import 'package:travel_planner/app/router/base_navigator.dart';
 import 'package:travel_planner/component/overlays/dialogs.dart';
 import 'package:travel_planner/component/overlays/loader.dart';
-import 'package:hng_authentication/authentication.dart';
 import 'package:travel_planner/data/model/auth/auth_base_response.dart';
 import 'package:travel_planner/data/model/auth/user.dart';
 import 'package:travel_planner/services/local_storage/shared_prefs.dart';
@@ -28,10 +28,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool obscurePassword = true;
   bool obscurePasswordConfirmation = true;
 
-  String? emailErrorText;
-  String? passwordErrorText;
-  String? confirmPasswordErrorText;
-  String? nameErrorText;
+  // String? emailErrorText;
+  // String? passwordErrorText;
+  // String? confirmPasswordErrorText;
+  // String? nameErrorText;
 
   Icon passwordVisibilityIcon = const Icon(Icons.visibility);
   Icon confirmPasswordVisibilityIcon = const Icon(Icons.visibility);
@@ -53,7 +53,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
 
   bool validateEmail({required String email}) {
-    return ((email.contains('@') && email.contains('.') && (email.substring(email.length - 1) != '.' && email.substring(email.length - 1) != '@'))) ||
+    return ((email.contains('@') &&
+            email.contains('.') &&
+            (email.substring(email.length - 1) != '.' &&
+                email.substring(email.length - 1) != '@'))) ||
         email.isEmpty;
   }
 
@@ -134,7 +137,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           const SizedBox(height: 40),
                           const Text(
                             "Full name",
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w500),
                           ),
                           const SizedBox(
                             height: 8,
@@ -154,16 +158,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             onTapOutside: (event) {
                               FocusScope.of(context).unfocus();
                             },
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
-                                nameErrorText = "Please enter your full name";
-                                setState(() {});
-                                return nameErrorText;
+                                return "Please enter your full name";
                               }
-
-                              nameErrorText = null;
-                              setState(() {});
-                              return nameErrorText;
+                              return null;
                             },
                             decoration: InputDecoration(
                               hintText: 'Mr travel planner',
@@ -171,7 +172,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 Icons.person,
                                 size: 20,
                               ),
-                              prefixIconColor: Theme.of(context).colorScheme.onBackground,
+                              prefixIconColor:
+                                  Theme.of(context).colorScheme.onBackground,
                               border: InputBorder.none,
                               filled: true,
                               fillColor: Colors.grey.shade100,
@@ -181,23 +183,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide(color: Theme.of(context).primaryColor),
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).primaryColor),
                               ),
                               errorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).colorScheme.error),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).colorScheme.error),
                               ),
-                              errorText: nameErrorText,
+                              //errorText: nameErrorText,
                             ),
                           ),
                           const SizedBox(height: 12.0),
                           const Text(
                             "Email",
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w500),
                           ),
                           const SizedBox(
                             height: 8,
@@ -209,30 +215,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             },
                             enableSuggestions: false,
                             autocorrect: false,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
                             keyboardType: TextInputType.emailAddress,
                             controller: _userEmail,
-                            onChanged: (_) {
-                              setState(() {});
-                            },
                             onTapOutside: (event) {
                               FocusScope.of(context).unfocus();
                             },
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
-                                emailErrorText = "Please enter your email";
-                                setState(() {});
-                                return emailErrorText;
+                                return "Please enter your email";
                               }
 
                               if (!validateEmail(email: value)) {
-                                emailErrorText = "Enter a valid email";
-                                setState(() {});
-                                return emailErrorText;
+                                return "Enter a valid email";
                               }
 
-                              emailErrorText = null;
-                              setState(() {});
-                              return emailErrorText;
+                              return null;
                             },
                             decoration: InputDecoration(
                               hintText: 'example@whatevermail.com',
@@ -240,7 +239,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 Icons.mail,
                                 size: 20,
                               ),
-                              prefixIconColor: Theme.of(context).colorScheme.onBackground,
+                              prefixIconColor:
+                                  Theme.of(context).colorScheme.onBackground,
                               border: InputBorder.none,
                               filled: true,
                               fillColor: Colors.grey.shade100,
@@ -250,23 +250,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide(color: Theme.of(context).primaryColor),
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).primaryColor),
                               ),
                               errorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).colorScheme.error),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).colorScheme.error),
                               ),
-                              errorText: emailErrorText,
+                              // errorText: emailErrorText,
                             ),
                           ),
                           const SizedBox(height: 12.0),
                           const Text(
                             "Password",
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w500),
                           ),
                           const SizedBox(
                             height: 8,
@@ -280,44 +284,36 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             enableSuggestions: false,
                             autocorrect: false,
                             controller: _userPassword,
-                            onChanged: (_) {
-                              setState(() {});
-                            },
                             onTapOutside: (event) {
                               FocusScope.of(context).unfocus();
                             },
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
-                                passwordErrorText = "Please enter your password";
-                                setState(() {});
-                                return passwordErrorText;
+                                return "Please enter your password";
                               }
 
                               if (value.contains(" ")) {
-                                passwordErrorText = "Password must not contain whitespaces";
-                                setState(() {});
-                                return passwordErrorText;
+                                return "Password must not contain whitespaces";
                               }
 
                               if (value.trim().length < 8) {
-                                passwordErrorText = "Password must be at least 8 characters";
-                                setState(() {});
-                                return passwordErrorText;
+                                return "Password must be at least 8 characters";
                               }
-
-                              passwordErrorText = null;
-                              setState(() {});
-                              return passwordErrorText;
+                              return null;
                             },
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
                             decoration: InputDecoration(
-                              errorText: passwordErrorText,
+                              //  errorText: passwordErrorText,
                               hintText: 'min. 8 characters',
                               prefixIcon: const Icon(
                                 Icons.lock,
                                 size: 20,
                               ),
-                              prefixIconColor: Theme.of(context).colorScheme.onBackground,
-                              suffixIconColor: Theme.of(context).colorScheme.onBackground,
+                              prefixIconColor:
+                                  Theme.of(context).colorScheme.onBackground,
+                              suffixIconColor:
+                                  Theme.of(context).colorScheme.onBackground,
                               filled: true,
                               fillColor: Colors.grey.shade100,
                               enabledBorder: OutlineInputBorder(
@@ -326,20 +322,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide(color: Theme.of(context).primaryColor),
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).primaryColor),
                               ),
                               errorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).colorScheme.error),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).colorScheme.error),
                               ),
                               suffixIcon: IconButton(
                                 onPressed: () {
                                   setState(() {
-                                    final toggleVisibility = setPasswordVisibility(obscureText: obscurePassword);
+                                    final toggleVisibility =
+                                        setPasswordVisibility(
+                                            obscureText: obscurePassword);
                                     obscurePassword = !obscurePassword;
                                     final newIconData = toggleVisibility();
                                     passwordVisibilityIcon = Icon(newIconData);
@@ -354,7 +355,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                           const Text(
                             "Confirm Password",
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w500),
                           ),
                           const SizedBox(
                             height: 8,
@@ -365,42 +367,32 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             enableSuggestions: false,
                             autocorrect: false,
                             controller: _userPasswordConfirmation,
-                            onChanged: (_) {
-                              setState(() {});
-                            },
                             onTapOutside: (event) {
                               FocusScope.of(context).unfocus();
                             },
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
-                                confirmPasswordErrorText = "Please enter your password";
-                                setState(() {});
-                                return confirmPasswordErrorText;
+                                return "Please enter your password";
                               }
 
                               if (value.contains(" ")) {
-                                confirmPasswordErrorText = "Password must not contain whitespaces";
-                                setState(() {});
-                                return confirmPasswordErrorText;
+                                return "Password must not contain whitespaces";
                               }
 
                               if (_userPassword.text != value) {
-                                confirmPasswordErrorText = "! Password Mismatch";
-                                setState(() {});
-                                return confirmPasswordErrorText;
+                                return "! Password Mismatch";
                               }
-
-                              confirmPasswordErrorText = null;
-                              setState(() {});
-                              return confirmPasswordErrorText;
+                              return null;
                             },
                             decoration: InputDecoration(
                               prefixIcon: const Icon(
                                 Icons.lock,
                                 size: 20,
                               ),
-                              prefixIconColor: Theme.of(context).colorScheme.onBackground,
-                              suffixIconColor: Theme.of(context).colorScheme.onBackground,
+                              prefixIconColor:
+                                  Theme.of(context).colorScheme.onBackground,
+                              suffixIconColor:
+                                  Theme.of(context).colorScheme.onBackground,
                               filled: true,
                               fillColor: Colors.grey.shade100,
                               enabledBorder: OutlineInputBorder(
@@ -409,23 +401,32 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide(color: Theme.of(context).primaryColor),
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).primaryColor),
                               ),
                               errorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).colorScheme.error),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).colorScheme.error),
                               ),
                               suffixIcon: IconButton(
                                 onPressed: () {
                                   setState(() {
-                                    final toggleConfirmVisibility = setPasswordVisibility(obscureText: obscurePasswordConfirmation);
-                                    obscurePasswordConfirmation = !obscurePasswordConfirmation;
-                                    final newIconData = toggleConfirmVisibility();
-                                    confirmPasswordVisibilityIcon = Icon(newIconData);
+                                    final toggleConfirmVisibility =
+                                        setPasswordVisibility(
+                                            obscureText:
+                                                obscurePasswordConfirmation);
+                                    obscurePasswordConfirmation =
+                                        !obscurePasswordConfirmation;
+                                    final newIconData =
+                                        toggleConfirmVisibility();
+                                    confirmPasswordVisibilityIcon =
+                                        Icon(newIconData);
                                   });
                                 },
                                 icon: confirmPasswordVisibilityIcon,
@@ -504,11 +505,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  BaseNavigator.pushNamedAndReplace(SignInScreen.routeName);
+                                  BaseNavigator.pushNamedAndReplace(
+                                      SignInScreen.routeName);
                                 },
                                 child: Text(
                                   "Login Here",
-                                  style: TextStyle(color: Theme.of(context).primaryColor),
+                                  style: TextStyle(
+                                      color: Theme.of(context).primaryColor),
                                 ),
                               ),
                             ],
