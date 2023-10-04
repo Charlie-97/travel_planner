@@ -445,7 +445,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     _userPassword.text,
                                   );
                                   if (result != null) {
-                                    final response = AuthBaseResponse.fromJson(result["response"]);
+                                    final response = AuthBaseResponse.fromJson(
+                                        result["response"]);
                                     if (response.error != null) {
                                       isLoading.value = false;
                                       if (mounted) {
@@ -465,14 +466,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       }
                                       if (result["headers"] != null) {
                                         final headers = result["headers"];
-                                        final headerString = headers["set-cookie"] as String;
+                                        final headerString =
+                                            headers["set-cookie"] as String;
                                         if (headers["set-cookie"] != null) {
-                                          storage.saveUserToken(headerString.substring(0, headerString.indexOf(";")));
+                                          storage.saveUserToken(
+                                              headerString.substring(0,
+                                                  headerString.indexOf(";")));
                                         }
                                       }
                                       storage.saveUser(user.toJson());
                                       isLoading.value = false;
-                                      BaseNavigator.pushNamedAndclear(Navigation.routeName);
+                                      BaseNavigator.pushNamedAndclear(
+                                          Navigation.routeName);
                                     }
                                   } else {
                                     isLoading.value = false;
@@ -481,6 +486,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         context: context,
                                       );
                                     }
+                                  }
+                                } on ApiException catch (e) {
+                                  isLoading.value = false;
+                                  if (mounted) {
+                                    AppOverlays.authErrorDialog(
+                                      context: context,
+                                      message: e.message,
+                                    );
                                   }
                                 } catch (e) {
                                   isLoading.value = false;
