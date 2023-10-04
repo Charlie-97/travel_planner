@@ -27,7 +27,7 @@ class _EditProfileState extends State<EditProfile> {
 
   ValueNotifier isLoading = ValueNotifier(false);
 
-  late AppUser user;
+  late User user;
   @override
   void initState() {
     super.initState();
@@ -37,7 +37,7 @@ class _EditProfileState extends State<EditProfile> {
       _newEmail = TextEditingController(text: user.email);
       _newUserName = TextEditingController(text: user.name);
     } else {
-      user = AppUser(
+      user = User(
         name: "Test planner",
         email: "example@test.com",
         credits: 2,

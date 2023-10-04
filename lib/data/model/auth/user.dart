@@ -1,4 +1,4 @@
-class AppUser {
+class User {
   String? createdAt;
   int? credits;
   String? email;
@@ -6,7 +6,7 @@ class AppUser {
   String? name;
   String? updatedAt;
 
-  AppUser({
+  User({
     this.createdAt,
     this.credits,
     this.email,
@@ -15,7 +15,7 @@ class AppUser {
     this.updatedAt,
   });
 
-  factory AppUser.fromJson(Map<String, dynamic> json) => AppUser(
+  factory User.fromJson(Map<String, dynamic> json) => User(
         createdAt: json["created_at"],
         credits: json["credits"],
         email: json["email"],
