@@ -24,7 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   initCheck() async {
-    await Future.delayed(const Duration(milliseconds: 2200));
+    await Future.delayed(const Duration(milliseconds: 2400));
     if (storage.getToken() == null) {
       BaseNavigator.pushNamedAndclear(SignInScreen.routeName);
     } else {

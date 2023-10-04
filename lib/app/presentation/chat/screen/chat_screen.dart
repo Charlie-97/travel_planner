@@ -1,14 +1,16 @@
 import 'package:chatview/chatview.dart';
 import 'package:flutter/material.dart';
+import 'package:hngx_openai/repository/openai_repository.dart';
 import 'package:travel_planner/app/presentation/chat/widgets/chat_bubble.dart';
 import 'package:travel_planner/app/router/base_navigator.dart';
 import 'package:travel_planner/component/constants.dart';
-import 'package:travel_planner/component/enums.dart';
 import 'package:travel_planner/component/overlays/dialogs.dart';
+import 'package:travel_planner/data/model/base_response.dart';
 import 'package:travel_planner/data/model/conversation.dart';
 import 'package:travel_planner/data/repositories/open_api/open_api_repo.dart';
 import 'package:travel_planner/data/sqflite/conversation_model.dart';
 import 'package:travel_planner/data/sqflite/message.dart';
+import 'package:travel_planner/services/local_storage/shared_prefs.dart';
 import 'package:travel_planner/services/local_storage/sqflite/sqflite_service.dart';
 import 'package:uuid/uuid.dart';
 
@@ -31,6 +33,8 @@ class _ChatScreenState extends State<ChatScreen> {
   late ConversationModel conversationModel;
   ScrollController scrollController = ScrollController();
   final openAi = OpenApiRepo.instance;
+  OpenAIRepository openAI = OpenAIRepository();
+  final storage = AppStorage.instance;
 
   ValueNotifier<bool> sendLoading = ValueNotifier(false);
 
@@ -71,8 +75,7 @@ class _ChatScreenState extends State<ChatScreen> {
         final id = uid.v1();
         final uiMessage = Message(
           id: id,
-          message:
-              "Hello Traveller! 👋 \n\nHow can I assist you today with your travel plans?",
+          message: "Hello Traveller! 👋 \n\nHow can I assist you today with your travel plans?",
           createdAt: DateTime.now(),
           sendBy: "AI",
         );
@@ -96,8 +99,7 @@ class _ChatScreenState extends State<ChatScreen> {
             if (element.message == prompt) {
               return Message(
                 id: element.id.toString(),
-                message:
-                    "Hello Traveller! 👋 \n\nHow can I assist you today with your travel plans?",
+                message: "Hello Traveller! 👋 \n\nHow can I assist you today with your travel plans?",
                 createdAt: element.createdAt!,
                 sendBy: element.sentBy!,
               );
@@ -114,8 +116,7 @@ class _ChatScreenState extends State<ChatScreen> {
           final id = uid.v1();
           final uiMessage = Message(
             id: id,
-            message:
-                "Hello Traveller! 👋 \n\nHow can I assist you today with your travel plans?",
+            message: "Hello Traveller! 👋 \n\nHow can I assist you today with your travel plans?",
             createdAt: DateTime.now(),
             sendBy: "AI",
           );
@@ -162,8 +163,7 @@ class _ChatScreenState extends State<ChatScreen> {
       message: message.message,
       sentBy: message.sendBy,
       createdAt: message.createdAt,
-      imageUrl:
-          message.messageType == MessageType.image ? message.message : null,
+      imageUrl: message.messageType == MessageType.image ? message.message : null,
     );
     sqlDb.addMessage(localMessage);
   }
@@ -198,8 +198,7 @@ class _ChatScreenState extends State<ChatScreen> {
       for (var element in messages) {
         sendingMessage = element.message;
         sender = element.sendBy;
-        if (sendingMessage ==
-            "Hello Traveller! 👋 \n\nHow can I assist you today with your travel plans?") {
+        if (sendingMessage == "Hello Traveller! 👋 \n\nHow can I assist you today with your travel plans?") {
           sendingMessage = prompt;
           sender = "user";
         }
@@ -216,17 +215,24 @@ class _ChatScreenState extends State<ChatScreen> {
       addMessageTolocalDB(newMessage);
       _chatController?.addMessage(newMessage);
 
-      final result = await openAi.interactWithLogs(
+      // final result = await openAi.interactWithLogs(
+      //   messageLogs,
+      //   newMessage.message,
+      // );
+
+      final response = await openAI.getChatCompletions(
         messageLogs,
         newMessage.message,
+        storage.getToken(),
       );
 
-      if (result.item1 != null) {
+      final result = BaseResponse.fromJson(response);
+      if (result.error == null) {
         final aId = uid.v1();
         final reply = Message(
           id: aId,
           createdAt: DateTime.now(),
-          message: result.item1!,
+          message: result.message!,
           sendBy: "AI",
           replyMessage: replyMessage,
           messageType: messageType,
@@ -235,19 +241,17 @@ class _ChatScreenState extends State<ChatScreen> {
         _chatController?.addMessage(reply);
         sendLoading.value = false;
         Future.delayed(const Duration(milliseconds: 300), () {
-          _chatController?.initialMessageList.last.setStatus =
-              MessageStatus.undelivered;
+          _chatController?.initialMessageList.last.setStatus = MessageStatus.undelivered;
         });
         Future.delayed(const Duration(milliseconds: 300), () {
-          _chatController?.initialMessageList.last.setStatus =
-              MessageStatus.read;
+          _chatController?.initialMessageList.last.setStatus = MessageStatus.read;
         });
       } else {
         sendLoading.value = false;
         sqlDb.deleteMessage(id);
         messages.removeWhere((element) => element.id == id);
         setState(() {});
-        if (result.item2 == ErrorType.payment) {
+        if (result.error.toString().toLowerCase().contains("subscription required")) {
           if (mounted) {
             final s = await AppOverlays.chatPaymentDialog(context);
             if (!mounted) return;
@@ -301,11 +305,8 @@ class _ChatScreenState extends State<ChatScreen> {
                       backgroundColor: Colors.transparent,
                     ),
                     showTypingIndicator: loading,
-                    typeIndicatorConfig: TypeIndicatorConfiguration(
-                      indicatorSize: 5,
-                      flashingCircleBrightColor: Colors.white,
-                      flashingCircleDarkColor: Colors.grey.shade200
-                    ),
+                    typeIndicatorConfig:
+                        TypeIndicatorConfiguration(indicatorSize: 5, flashingCircleBrightColor: Colors.white, flashingCircleDarkColor: Colors.grey.shade200),
                     sendMessageConfig: SendMessageConfiguration(
                       textFieldBackgroundColor: Colors.blue[50],
                       defaultSendButtonColor: Colors.blue[400],
@@ -338,9 +339,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     chatController: _chatController!,
                     onSendTap: _onSendTap,
                     currentUser: currentUser,
-                    chatViewState: messages.isNotEmpty
-                        ? ChatViewState.hasMessages
-                        : ChatViewState.noData,
+                    chatViewState: messages.isNotEmpty ? ChatViewState.hasMessages : ChatViewState.noData,
                     chatBubbleConfig: ChatBubbleConfiguration(
                       maxWidth: MediaQuery.of(context).size.width * .7,
                       inComingChatBubbleConfig: chatBubble(
@@ -354,9 +353,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         textColor: Colors.black,
                       ),
                     ),
-                    chatViewStateConfig: const ChatViewStateConfiguration(
-                        noMessageWidgetConfig: ChatViewStateWidgetConfiguration(
-                            widget: SizedBox())),
+                    chatViewStateConfig: const ChatViewStateConfiguration(noMessageWidgetConfig: ChatViewStateWidgetConfiguration(widget: SizedBox())),
                   );
                 })
             : const Center(
