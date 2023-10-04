@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hng_authentication/authentication.dart';
 import 'package:travel_planner/app/presentation/authentication/screens/sign_in.dart';
 import 'package:travel_planner/app/presentation/settings/screen/edit_profile.dart';
+import 'package:travel_planner/app/presentation/settings/screen/payment_screen.dart';
 import 'package:travel_planner/app/router/base_navigator.dart';
 import 'package:travel_planner/component/overlays/dialogs.dart';
 import 'package:travel_planner/component/overlays/loader.dart';
@@ -38,7 +39,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             final headers = result["headers"];
             final headerString = headers["set-cookie"] as String;
             if (headers["set-cookie"] != null) {
-              storage.saveUserToken(headerString.substring(0, headerString.indexOf(";")));
+              storage.saveUserToken(
+                  headerString.substring(0, headerString.indexOf(";")));
             }
           }
           storage.saveUser(dbUser.toJson());
@@ -136,7 +138,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           Icons.arrow_forward_ios,
                           size: 20,
                         ),
-                        onTap: () {},
+                        onTap: () {
+                          BaseNavigator.pushNamed(PaymentScreen.routeName);
+                          // showModalBottomSheet(
+                          //     context: context,
+                          //     builder: (context) {
+                          //       return const SelectPaymentType();
+                          //     });
+                        },
                       ),
                       const Spacer(),
                       InkWell(
@@ -150,7 +159,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               navigationIconLoading = true;
                               setState(() {});
                               final result = await auth.logout(user.email!);
-                              final response = AuthBaseResponse.fromJson(result);
+                              final response =
+                                  AuthBaseResponse.fromJson(result);
                               if (response.error != null) {
                                 isLoading.value = false;
                                 navigationIconLoading = false;
@@ -162,12 +172,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   );
                                 }
                               } else {
-                                if (response.message?.toLowerCase() == "success") {
+                                if (response.message?.toLowerCase() ==
+                                    "success") {
                                   storage.clearToken();
                                   isLoading.value = false;
                                   navigationIconLoading = false;
                                   setState(() {});
-                                  BaseNavigator.pushNamedAndclear(SignInScreen.routeName);
+                                  BaseNavigator.pushNamedAndclear(
+                                      SignInScreen.routeName);
                                 }
                               }
                             } catch (e) {
@@ -232,6 +244,50 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return null;
   }
 }
+
+// class SelectPaymentType extends StatelessWidget {
+//   const SelectPaymentType({
+//     super.key,
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       padding: const EdgeInsets.all(16),
+//       child: Column(
+//         mainAxisSize: MainAxisSize.min,
+//         children: <Widget>[
+//           const Text(
+//             'Select Payment Method',
+//             style: TextStyle(
+//               fontSize: 18,
+//               fontWeight: FontWeight.bold,
+//             ),
+//           ),
+//           const SizedBox(height: 20),
+//           ListTile(
+//             leading: const Icon(Icons.payment),
+//             title: const Text('Google Pay'),
+//             onTap: () {
+//               Navigator.pop(context); // Close the modal sheet
+//               // Navigate to the payment screen with Google Pay selected
+//               Navigator.pushNamed(context, '/payment', arguments: 'Google Pay');
+//             },
+//           ),
+//           ListTile(
+//             leading: const Icon(Icons.payment),
+//             title: const Text('Apple Pay'),
+//             onTap: () {
+//               Navigator.pop(context); // Close the modal sheet
+//               // Navigate to the payment screen with Apple Pay selected
+//               Navigator.pushNamed(context, '/payment', arguments: 'Apple Pay');
+//             },
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
 class LogoutDialog extends StatelessWidget {
   const LogoutDialog({

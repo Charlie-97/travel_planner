@@ -5,6 +5,7 @@ import 'package:travel_planner/app/presentation/chat/screen/chat_screen.dart';
 import 'package:travel_planner/app/presentation/home_page/home_page.dart';
 import 'package:travel_planner/app/presentation/navigation.dart';
 import 'package:travel_planner/app/presentation/settings/screen/edit_profile.dart';
+import 'package:travel_planner/app/presentation/settings/screen/payment_screen.dart';
 import 'package:travel_planner/app/presentation/splash/splash_screen.dart';
 
 class AppRouter {
@@ -67,6 +68,8 @@ class AppRouter {
         return _getPageRoute(const EditProfile());
       case Navigation.routeName:
         return _getPageRoute(const Navigation());
+      case PaymentScreen.routeName:
+        return _getPageRoute(const PaymentScreen());
       default:
         return _getPageRoute(const SplashScreen());
     }
