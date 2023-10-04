@@ -48,7 +48,11 @@ class _TravelPlannerAppState extends State<TravelPlannerApp> {
       /// getting global buildcontext context to use generally in the app.
       navigatorKey: BaseNavigator.key,
       theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue), useMaterial3: true, textTheme: GoogleFonts.ubuntuTextTheme(Theme.of(context).textTheme)
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+          useMaterial3: true,
+          textTheme: GoogleFonts.ubuntuTextTheme(
+            Theme.of(context).textTheme,
+          )
 
           /// This is where we added our own custom theme extensions to the app.
           /// We can add ranging from text theme to button theme, to all sorts,

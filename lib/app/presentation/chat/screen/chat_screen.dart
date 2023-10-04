@@ -1,7 +1,12 @@
 import 'package:chatview/chatview.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_planner/app/presentation/chat/widgets/chat_bubble.dart';
+import 'package:travel_planner/app/router/base_navigator.dart';
+import 'package:travel_planner/component/constants.dart';
+import 'package:travel_planner/component/enums.dart';
+import 'package:travel_planner/component/overlays/dialogs.dart';
 import 'package:travel_planner/data/model/conversation.dart';
+import 'package:travel_planner/data/repositories/open_api/open_api_repo.dart';
 import 'package:travel_planner/data/sqflite/conversation_model.dart';
 import 'package:travel_planner/data/sqflite/message.dart';
 import 'package:travel_planner/services/local_storage/sqflite/sqflite_service.dart';
@@ -25,11 +30,15 @@ class _ChatScreenState extends State<ChatScreen> {
   final SqfLiteService sqlDb = SqfLiteService.instance;
   late ConversationModel conversationModel;
   ScrollController scrollController = ScrollController();
+  final openAi = OpenApiRepo.instance;
+
+  ValueNotifier sendLoading = ValueNotifier(false);
+
   final uid = const Uuid();
 
   final currentUser = ChatUser(
     id: "user",
-    name: "User",
+    name: "user",
   );
   ChatController? _chatController;
   List<Message> messages = [];
@@ -37,9 +46,6 @@ class _ChatScreenState extends State<ChatScreen> {
   dbCheck() async {
     if (widget.conversationModel == null) {
       final id = uid.v1();
-
-      /// Fetch the data from Gpt server and start a new chat to get the Id
-      /// And initiate the prompt engineering message
       ConversationModel conversation = ConversationModel(
         id: id,
         gptId: "testing-$id",
@@ -63,14 +69,20 @@ class _ChatScreenState extends State<ChatScreen> {
         setState(() {});
       } else {
         final id = uid.v1();
-        final message = Message(
+        final uiMessage = Message(
           id: id,
           message: "Hello Traveller! 👋 \n\nHow can I assist you today with your travel plans?",
           createdAt: DateTime.now(),
           sendBy: "AI",
         );
-        addMessageTolocalDB(message);
-        messages.add(message);
+        final localMessage = Message(
+          id: id,
+          message: prompt,
+          createdAt: DateTime.now(),
+          sendBy: "AI",
+        );
+        messages.add(uiMessage);
+        addMessageTolocalDB(localMessage);
         setState(() {});
       }
     } else {
@@ -80,6 +92,14 @@ class _ChatScreenState extends State<ChatScreen> {
         final dBmessages = await sqlDb.findMessages(conversationModel.gptId!);
         if (dBmessages.isNotEmpty) {
           messages = dBmessages.map((element) {
+            if (element.message == prompt) {
+              return Message(
+                id: element.id.toString(),
+                message: "Hello Traveller! 👋 \n\nHow can I assist you today with your travel plans?",
+                createdAt: element.createdAt!,
+                sendBy: element.sentBy!,
+              );
+            }
             return Message(
               id: element.id.toString(),
               message: element.message!,
@@ -90,17 +110,36 @@ class _ChatScreenState extends State<ChatScreen> {
           setState(() {});
         } else {
           final id = uid.v1();
-          final message = Message(
+          final uiMessage = Message(
             id: id,
             message: "Hello Traveller! 👋 \n\nHow can I assist you today with your travel plans?",
             createdAt: DateTime.now(),
             sendBy: "AI",
           );
-          addMessageTolocalDB(message);
-          messages.add(message);
+          final localMessage = Message(
+            id: id,
+            message: prompt,
+            createdAt: DateTime.now(),
+            sendBy: "AI",
+          );
+          addMessageTolocalDB(localMessage);
+          messages.add(uiMessage);
         }
       }
     }
+  }
+
+  initChatController() {
+    _chatController = ChatController(
+      initialMessageList: messages,
+      scrollController: scrollController,
+      chatUsers: [
+        ChatUser(
+          id: "AI",
+          name: "Travel Bot",
+        ),
+      ],
+    );
   }
 
   @override
@@ -109,17 +148,7 @@ class _ChatScreenState extends State<ChatScreen> {
     sqlDb.initMessageStream();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await dbCheck();
-      _chatController = ChatController(
-        initialMessageList: messages,
-        scrollController: scrollController,
-        chatUsers: [
-          ChatUser(
-            id: "AI",
-            name: "Travel Bot",
-            // profilePhoto: Data.profileImage,
-          ),
-        ],
-      );
+      initChatController();
     });
   }
 
@@ -140,23 +169,104 @@ class _ChatScreenState extends State<ChatScreen> {
     ReplyMessage replyMessage,
     MessageType messageType,
   ) async {
+    if (sendLoading.value) {
+      return;
+    }
+    if (message.trim().isEmpty) {
+      return;
+    }
+
+    sendLoading.value = true;
     final id = uid.v1();
-    final newMessage = Message(
-      id: id,
-      createdAt: DateTime.now(),
-      message: message,
-      sendBy: currentUser.id,
-      replyMessage: replyMessage,
-      messageType: messageType,
-    );
-    addMessageTolocalDB(newMessage);
-    _chatController?.addMessage(newMessage);
-    Future.delayed(const Duration(milliseconds: 300), () {
-      _chatController?.initialMessageList.last.setStatus = MessageStatus.undelivered;
-    });
-    Future.delayed(const Duration(seconds: 1), () {
-      _chatController?.initialMessageList.last.setStatus = MessageStatus.read;
-    });
+    String sendingMessage;
+    String sender;
+
+    try {
+      final newMessage = Message(
+        id: id,
+        createdAt: DateTime.now(),
+        message: message,
+        sendBy: currentUser.id,
+        replyMessage: replyMessage,
+        messageType: messageType,
+      );
+      List<String> messageLogs = [];
+      for (var element in messages) {
+        sendingMessage = element.message;
+        sender = element.sendBy;
+        if (sendingMessage == "Hello Traveller! 👋 \n\nHow can I assist you today with your travel plans?") {
+          sendingMessage = prompt;
+          sender = "user";
+        }
+        messageLogs.add(
+          "$sender: $sendingMessage",
+        );
+      }
+
+      messageLogs.insert(
+        1,
+        "AI: Understood. I'm here to assist with any travel planning. Please feel free to ask any questions or seek assistance related to travel arrangements,destinations,itineraries, accommodations, and related topics, and I'll be happy to help",
+      );
+
+      addMessageTolocalDB(newMessage);
+      _chatController?.addMessage(newMessage);
+
+      final result = await openAi.interactWithLogs(
+        messageLogs,
+        newMessage.message,
+      );
+
+      if (result.item1 != null) {
+        final aId = uid.v1();
+        final reply = Message(
+          id: aId,
+          createdAt: DateTime.now(),
+          message: result.item1!,
+          sendBy: "AI",
+          replyMessage: replyMessage,
+          messageType: messageType,
+        );
+        addMessageTolocalDB(reply);
+        _chatController?.addMessage(reply);
+        sendLoading.value = false;
+        Future.delayed(const Duration(milliseconds: 300), () {
+          _chatController?.initialMessageList.last.setStatus = MessageStatus.undelivered;
+        });
+        Future.delayed(const Duration(milliseconds: 300), () {
+          _chatController?.initialMessageList.last.setStatus = MessageStatus.read;
+        });
+      } else {
+        sendLoading.value = false;
+        sqlDb.deleteMessage(id);
+        messages.removeWhere((element) => element.id == id);
+        setState(() {});
+        if (result.item2 == ErrorType.payment) {
+          if (mounted) {
+            final s = await AppOverlays.chatPaymentDialog(context);
+            if (!mounted) return;
+            if (s == true) {
+              BaseNavigator.pop();
+            }
+          }
+        } else {
+          if (mounted) {
+            AppOverlays.chatErrorDialog(
+              context: context,
+            );
+          }
+        }
+      }
+    } catch (e) {
+      sendLoading.value = false;
+      sqlDb.deleteMessage(id);
+      messages.removeWhere((element) => element.id == id);
+      setState(() {});
+      if (mounted) {
+        AppOverlays.chatErrorDialog(
+          context: context,
+        );
+      }
+    }
   }
 
   @override
@@ -176,15 +286,6 @@ class _ChatScreenState extends State<ChatScreen> {
                   title: Text(conversationModel.title ?? "TRAVEL PLANNER"),
                   backgroundColor: Colors.transparent,
                   scrolledUnderElevation: 0,
-                  // actions: [
-                  //   IconButton(
-                  //     onPressed: () {},
-                  //     icon: const Icon(
-                  //       Icons.add_box_outlined,
-                  //       size: 30,
-                  //     ),
-                  //   )
-                  // ],
                 ),
                 chatBackgroundConfig: const ChatBackgroundConfiguration(
                   backgroundColor: Colors.transparent,
@@ -198,6 +299,21 @@ class _ChatScreenState extends State<ChatScreen> {
                     textStyle: TextStyle(
                       color: Colors.black,
                     ),
+                  ),
+                  sendButtonIcon: ValueListenableBuilder(
+                    valueListenable: sendLoading,
+                    builder: (context, value, _) {
+                      if (value) {
+                        return const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      return const Icon(
+                        Icons.send,
+                      );
+                    },
                   ),
                   enableCameraImagePicker: false,
                   enableGalleryImagePicker: false,

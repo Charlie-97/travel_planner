@@ -5,6 +5,7 @@ import 'package:travel_planner/data/model/auth/user.dart';
 
 class AppKeys {
   static const String profile = "profile";
+  static const String cookieToken = "cookieToken";
 }
 
 class AppStorage {
@@ -23,6 +24,10 @@ class AppStorage {
     await _sharedPreferences.clear();
   }
 
+  void clearToken() async {
+    await _sharedPreferences.remove(AppKeys.cookieToken);
+  }
+
   void clearUser() async {
     await _sharedPreferences.remove(AppKeys.profile);
   }
@@ -34,12 +39,20 @@ class AppStorage {
     );
   }
 
-  AppUser? getUserData() {
+  saveUserToken(String token) async {
+    await _sharedPreferences.setString(AppKeys.cookieToken, token);
+  }
+
+  getToken() {
+    return _sharedPreferences.getString(AppKeys.cookieToken);
+  }
+
+  User? getUserData() {
     final q = _sharedPreferences.getString(AppKeys.profile);
     if (q == null) {
       return null;
     }
-    AppUser userData = AppUser.fromJson(
+    User userData = User.fromJson(
       json.decode(_sharedPreferences.getString(AppKeys.profile) ?? ""),
     );
     return userData;

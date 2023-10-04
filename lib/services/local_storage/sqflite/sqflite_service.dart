@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:travel_planner/component/constants.dart';
 import 'package:travel_planner/data/sqflite/conversation_model.dart';
 import 'package:travel_planner/data/sqflite/message.dart';
 
@@ -132,6 +133,9 @@ class SqfLiteService {
           final conversation = ConversationModel.fromJson(e);
           if (mostRecentMessage.isNotEmpty) {
             final localMessage = LocalMessage.fromJson(mostRecentMessage.first);
+            if (localMessage.message == prompt) {
+              localMessage.message = "Hello Traveller! 👋 \n\nHow can I assist you today with your travel plans?";
+            }
             conversation.mostRecent = localMessage;
           }
 
@@ -177,6 +181,9 @@ class SqfLiteService {
         final conversation = ConversationModel.fromJson(conv.first);
         if (mostRecentMessage.isNotEmpty) {
           final localMessage = LocalMessage.fromJson(mostRecentMessage.first);
+          if (localMessage.message == prompt) {
+            localMessage.message = "Hello Traveller! 👋 \n\nHow can I assist you today with your travel plans?";
+          }
           conversation.mostRecent = localMessage;
         }
 
@@ -226,6 +233,9 @@ class SqfLiteService {
         final conversation = ConversationModel.fromJson(conv.first);
         if (mostRecentMessage.isNotEmpty) {
           final localMessage = LocalMessage.fromJson(mostRecentMessage.first);
+          if (localMessage.message == prompt) {
+            localMessage.message = "Hello Traveller! 👋 \n\nHow can I assist you today with your travel plans?";
+          }
           conversation.mostRecent = localMessage;
         }
 
