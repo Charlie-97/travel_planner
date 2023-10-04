@@ -300,7 +300,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     chatBackgroundConfig: const ChatBackgroundConfiguration(
                       backgroundColor: Colors.transparent,
                     ),
-                    showTypingIndicator: true,//loading,
+                    showTypingIndicator: loading,
                     typeIndicatorConfig: TypeIndicatorConfiguration(
                       indicatorSize: 5,
                       flashingCircleBrightColor: Colors.white,
