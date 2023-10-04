@@ -300,7 +300,12 @@ class _ChatScreenState extends State<ChatScreen> {
                     chatBackgroundConfig: const ChatBackgroundConfiguration(
                       backgroundColor: Colors.transparent,
                     ),
-                    showTypingIndicator: loading,
+                    showTypingIndicator: true,//loading,
+                    typeIndicatorConfig: TypeIndicatorConfiguration(
+                      indicatorSize: 5,
+                      flashingCircleBrightColor: Colors.white,
+                      flashingCircleDarkColor: Colors.grey.shade200
+                    ),
                     sendMessageConfig: SendMessageConfiguration(
                       textFieldBackgroundColor: Colors.blue[50],
                       defaultSendButtonColor: Colors.blue[400],
