@@ -408,9 +408,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 try {
                                   isLoading.value = true;
                                   final result = await auth.signUp(
-                                    _userEmail.text,
-                                    _username.text,
-                                    _userPassword.text,
+                                    _userEmail.text.trim(),
+                                    _username.text.trim(),
+                                    _userPassword.text.trim(),
                                   );
                                   if (result != null) {
                                     final response = AuthBaseResponse.fromJson(result["response"]);

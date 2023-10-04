@@ -111,8 +111,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           const SizedBox(height: 40),
                           const Text(
                             "Email",
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w500),
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                           ),
                           const SizedBox(
                             height: 8,
@@ -132,8 +131,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             onTapOutside: (event) {
                               FocusScope.of(context).unfocus();
                             },
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
                                 return "Please enter your email";
@@ -151,8 +149,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                 Icons.mail,
                                 size: 20,
                               ),
-                              prefixIconColor:
-                                  Theme.of(context).colorScheme.onBackground,
+                              prefixIconColor: Theme.of(context).colorScheme.onBackground,
                               border: InputBorder.none,
                               filled: true,
                               fillColor: Colors.grey.shade100,
@@ -162,18 +159,15 @@ class _SignInScreenState extends State<SignInScreen> {
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).primaryColor),
+                                borderSide: BorderSide(color: Theme.of(context).primaryColor),
                               ),
                               errorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).colorScheme.error),
+                                borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).colorScheme.error),
+                                borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
                               ),
                               //  errorText: emailErrorText,
                             ),
@@ -183,8 +177,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           ),
                           const Text(
                             "Password",
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w500),
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                           ),
                           const SizedBox(
                             height: 8,
@@ -215,8 +208,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               }
                               return null;
                             },
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
                             decoration: InputDecoration(
                               //errorText: passwordErrorText,
                               hintText: 'password',
@@ -224,10 +216,8 @@ class _SignInScreenState extends State<SignInScreen> {
                                 Icons.lock,
                                 size: 20,
                               ),
-                              prefixIconColor:
-                                  Theme.of(context).colorScheme.onBackground,
-                              suffixIconColor:
-                                  Theme.of(context).colorScheme.onBackground,
+                              prefixIconColor: Theme.of(context).colorScheme.onBackground,
+                              suffixIconColor: Theme.of(context).colorScheme.onBackground,
                               filled: true,
                               fillColor: Colors.grey.shade100,
                               enabledBorder: OutlineInputBorder(
@@ -236,25 +226,20 @@ class _SignInScreenState extends State<SignInScreen> {
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).primaryColor),
+                                borderSide: BorderSide(color: Theme.of(context).primaryColor),
                               ),
                               errorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).colorScheme.error),
+                                borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).colorScheme.error),
+                                borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
                               ),
                               suffixIcon: IconButton(
                                 onPressed: () {
                                   setState(() {
-                                    final toggleVisibility =
-                                        setPasswordVisibility(
-                                            obscureText: obscurePassword);
+                                    final toggleVisibility = setPasswordVisibility(obscureText: obscurePassword);
                                     obscurePassword = !obscurePassword;
                                     final newIconData = toggleVisibility();
                                     passwordVisibilityIcon = Icon(newIconData);
@@ -273,8 +258,8 @@ class _SignInScreenState extends State<SignInScreen> {
                                 try {
                                   isLoading.value = true;
                                   final result = await auth.signIn(
-                                    _userEmail.text,
-                                    _userPassword.text,
+                                    _userEmail.text.trim(),
+                                    _userPassword.text.trim(),
                                   );
                                   if (result != null) {
                                     final response = AuthBaseResponse.fromJson(result["response"]);
@@ -315,7 +300,6 @@ class _SignInScreenState extends State<SignInScreen> {
                                     }
                                   }
                                 } catch (e) {
-                                  
                                   isLoading.value = false;
                                   if (mounted) {
                                     AppOverlays.authErrorDialog(
@@ -338,13 +322,11 @@ class _SignInScreenState extends State<SignInScreen> {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  BaseNavigator.pushNamedAndReplace(
-                                      SignUpScreen.routeName);
+                                  BaseNavigator.pushNamedAndReplace(SignUpScreen.routeName);
                                 },
                                 child: Text(
                                   "Sign up Here",
-                                  style: TextStyle(
-                                      color: Theme.of(context).primaryColor),
+                                  style: TextStyle(color: Theme.of(context).primaryColor),
                                 ),
                               ),
                             ],
