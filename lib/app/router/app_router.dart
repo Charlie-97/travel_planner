@@ -69,7 +69,10 @@ class AppRouter {
       case Navigation.routeName:
         return _getPageRoute(const Navigation());
       case PaymentScreen.routeName:
-        return _getPageRoute(const PaymentScreen());
+        final id = settings.arguments as String;
+        return _getPageRoute(PaymentScreen(
+          userId: id,
+        ));
       default:
         return _getPageRoute(const SplashScreen());
     }
