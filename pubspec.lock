@@ -451,7 +451,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "9a55bd5b3bc0697f1be083156f785013b22180b5"
+      resolved-ref: "378448f27ff193e1b0566a29931a2329de2ab564"
       url: "https://github.com/Oladips/openai-package"
     source: git
     version: "1.0.0"
