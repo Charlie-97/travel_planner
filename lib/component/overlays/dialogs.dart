@@ -1,8 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:travel_planner/app/presentation/settings/screen/payment_screen.dart';
+import 'package:travel_planner/app/presentation/settings/screen/settings.dart';
 import 'package:travel_planner/app/router/base_navigator.dart';
 
 class AppOverlays {
+  static showExitConfirmationDialog(BuildContext context) async {
+    final s = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const ExitDialog();
+      },
+    );
+
+    if (s != null) {
+      return s;
+    }
+
+    return null;
+  }
+
   static dynamic showDeleteConversationDialog(
     BuildContext context,
   ) async {
