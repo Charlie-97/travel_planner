@@ -5,7 +5,9 @@ import 'package:in_app_payment/in_app_payment.dart';
 
 class PaymentScreen extends StatefulWidget {
   static const routeName = "payment";
-  const PaymentScreen({super.key});
+  const PaymentScreen({super.key, required this.userId});
+
+  final String userId;
 //
 
   @override
@@ -14,9 +16,11 @@ class PaymentScreen extends StatefulWidget {
 
 class _PaymentScreenState extends State<PaymentScreen> {
   final pay = HNGPay();
+  //final storage = AppStorage.instance;
 
   @override
   Widget build(BuildContext context) {
+    // final user = storage.getUserData();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Payment Screen'),
@@ -40,8 +44,16 @@ class _PaymentScreenState extends State<PaymentScreen> {
             ),
             const SizedBox(height: 20),
             Platform.isAndroid
-                ? pay.googlePay(amountToPay: "5")
-                : pay.applePay(amountToPay: "5")
+                ? pay.googlePay(
+                    context,
+                    amountToPay: "5",
+                    userID: widget.userId,
+                  )
+                : pay.applePay(
+                    context,
+                    amountToPay: "5",
+                    userID: widget.userId,
+                  )
           ],
         ),
       ),
