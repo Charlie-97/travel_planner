@@ -39,8 +39,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             final headers = result["headers"];
             final headerString = headers["set-cookie"] as String;
             if (headers["set-cookie"] != null) {
-              storage.saveUserToken(
-                  headerString.substring(0, headerString.indexOf(";")));
+              storage.saveUserToken(headerString.substring(0, headerString.indexOf(";")));
             }
           }
           storage.saveUser(dbUser.toJson());
@@ -98,7 +97,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                user.name ?? "",
+                                user.name?.replaceAll("_", " ") ?? "",
                                 style: const TextStyle(
                                   fontSize: 18.0,
                                   fontWeight: FontWeight.bold,
@@ -150,8 +149,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       const Spacer(),
                       InkWell(
                         onTap: () async {
-                          final result =
-                              await _showLogoutConfirmationDialog(context);
+                          final result = await _showLogoutConfirmationDialog(context);
                           if (!mounted) return;
                           if (result == true) {
                             try {
@@ -159,8 +157,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               navigationIconLoading = true;
                               setState(() {});
                               final result = await auth.logout(user.email!);
-                              final response =
-                                  AuthBaseResponse.fromJson(result);
+                              final response = AuthBaseResponse.fromJson(result);
                               if (response.error != null) {
                                 isLoading.value = false;
                                 navigationIconLoading = false;
@@ -172,14 +169,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   );
                                 }
                               } else {
-                                if (response.message?.toLowerCase() ==
-                                    "success") {
+                                if (response.message?.toLowerCase() == "success") {
                                   storage.clearToken();
                                   isLoading.value = false;
                                   navigationIconLoading = false;
                                   setState(() {});
-                                  BaseNavigator.pushNamedAndclear(
-                                      SignInScreen.routeName);
+                                  BaseNavigator.pushNamedAndclear(SignInScreen.routeName);
                                 }
                               }
                             } catch (e) {
@@ -195,8 +190,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             }
                           }
                         },
-                        overlayColor:
-                            const MaterialStatePropertyAll(Colors.transparent),
+                        overlayColor: const MaterialStatePropertyAll(Colors.transparent),
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -288,6 +282,44 @@ class _SettingsScreenState extends State<SettingsScreen> {
 //     );
 //   }
 // }
+
+class ExitDialog extends StatelessWidget {
+  const ExitDialog({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Center(
+          child: Text(
+        'Are you sure you want to exit the app?',
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+        ),
+      )),
+      content: const Text(
+        " Stay a while longer and continue your journey of discovery with us!",
+        textAlign: TextAlign.center,
+      ),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            BaseNavigator.pop(false);
+          },
+          child: const Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () {
+            BaseNavigator.pop(true);
+          },
+          child: const Text('Logout'),
+        ),
+      ],
+    );
+  }
+}
 
 class LogoutDialog extends StatelessWidget {
   const LogoutDialog({
