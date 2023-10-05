@@ -251,7 +251,9 @@ class _ChatScreenState extends State<ChatScreen> {
         sqlDb.deleteMessage(id);
         messages.removeWhere((element) => element.id == id);
         setState(() {});
-        if (result.error.toString().toLowerCase().contains("subscription required")) {
+        if (
+            // result.item1 != null
+            result.error.toString().toLowerCase().contains("subscription required")) {
           if (mounted) {
             final s = await AppOverlays.chatPaymentDialog(context);
             if (!mounted) return;
@@ -263,6 +265,7 @@ class _ChatScreenState extends State<ChatScreen> {
           if (mounted) {
             AppOverlays.chatErrorDialog(
               context: context,
+              message: result.error,
             );
           }
         }
